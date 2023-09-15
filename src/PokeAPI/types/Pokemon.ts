@@ -1,4 +1,5 @@
 import { NamedAPIResource, VersionGameIndex } from "./Utility"
+import * as SpriteFormat from "./SpriteFormats";
 
 export interface Pokemon {
     id: number;
@@ -93,6 +94,40 @@ export interface PokemonSprites {
             front_default: string;
             front_shiny: string;
         }
-        // FIXME: Version Sprites
+    }
+    versions: {
+        "generation-i": {
+            "red-blue": SpriteFormat.Gen1;
+            "yellow": SpriteFormat.Gen1;
+        };
+        "generation-ii": {
+            gold: SpriteFormat.Gen2GoldSilver;
+            silver: SpriteFormat.Gen2GoldSilver;
+            crystal: SpriteFormat.Gen2Crystal;
+        };
+        "generation-iii": {
+            "ruby-sapphire": SpriteFormat.Gen3RubySapphire;
+            emerald: SpriteFormat.Gen3Emerald;
+            "firered-leafgreen": SpriteFormat.Gen3RubySapphire;
+        };
+        "generation-iv": {
+            "diamond-pearl": SpriteFormat.Gen4;
+            "heartgold-soulsilver": SpriteFormat.Gen4;
+            "platinum": SpriteFormat.Gen4;
+        };
+        "generation-v": {
+            "black-white": SpriteFormat.Gen5;
+        };
+        "generation-vi": {
+            "omegaruby-alphasapphire": SpriteFormat.Gen6;
+            "x-y": SpriteFormat.Gen6;
+        };
+        "generation-vii": {
+            icons: SpriteFormat.Icon;
+            "ultra-sun-ultra-moon": SpriteFormat.Gen7;
+        };
+        "generation-viii": {
+            icons: SpriteFormat.Icon;
+        };
     }
 }
