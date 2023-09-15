@@ -8,8 +8,6 @@ type PokemonViewProps = {
 }
 
 export function PokemonView({ pokemonName, data, desc }: PokemonViewProps) {
-    // console.log(data);
-    // console.log(desc);
     const flavorText = formatFlavorText(desc.flavor_text_entries[0].flavor_text);
     const imgSrc = data.sprites.other.dream_world.front_default;
     return (
