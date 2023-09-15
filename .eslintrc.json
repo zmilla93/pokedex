@@ -26,7 +26,13 @@
         }
     },
     "rules": {
-        // FIXME, currently disabled for webpack.config.js
-        "@typescript-eslint/no-var-requires": "off"
+        // FIXME: currently disabled for webpack.config.js
+        "@typescript-eslint/no-var-requires": "off",
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "warn",
+        // FIXME: disabled for pokeapi objects
+        "@typescript-eslint/no-explicit-any": "warn",
+        // Warnings that default to erros
+        "prefer-const": "warn"
     }
 }
