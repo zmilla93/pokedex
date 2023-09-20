@@ -1,42 +1,73 @@
-import { Pokemon, PokemonType } from "../PokeAPI/types/Pokemon";
-
+import { Pokemon, PokemonSpecies, PokemonType } from "../PokeAPI/types/Pokemon";
+import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
 
 type PokemonViewProps = {
     pokemonName: string,
-    data: Pokemon,
-    desc: any,
 }
 
-export function PokemonView({ pokemonName, data, desc }: PokemonViewProps) {
-    const flavorText = formatFlavorText(desc.flavor_text_entries[0].flavor_text);
-    const imgSrc = data.sprites.other.dream_world.front_default;
+export function PokemonView({ pokemonName }: PokemonViewProps) {
+    // FIXME : Temp local name
+    pokemonName = "chikorita"
+    const pokeData = usePokemon(pokemonName);
+    if (!validatePokemonData(pokeData)) return (<div>Loading...</div>);
+    const { pokemon, species } = pokeData;
+    const flavorText = formatFlavorText(species!.flavor_text_entries[0].flavor_text);
+    const imgSrc = pokemon!.sprites.other["official-artwork"].front_default;
     return (
-        <div className="bg-slate-300 block w-fit">
-            <h1>{pokemonName}</h1>
-            <h2>{data.id}</h2>
-            {/* <img src={imgSrc} /> */}
-            <Image src={imgSrc} />
-            {/* Stats */}
-            <div>
-                <div>Height: {data.height / 10}m</div>
-                <div>Weight: {data.weight * 0.1}kg</div>
-            </div>
-            {/* Description */}
-            <div>
-                {flavorText}
-            </div>
-            {/* Type */}
-            <div>
-                Type
-                <TypeView types={data.types} />
+        <div>
+            <div className="">{pokemonName} | #{pokemon!.id}</div>
+            <div className="">#{pokemon!.order}</div>
+            <div className="bg-blue-300 flex max-w-6xl">
+
+                {/* Left Column */}
+                <div className="flex w-1/2 bg-orange-400 justify-center">
+                    <Image src={imgSrc} />
+                </div>
+                {/* Right Column */}
+                <div className="w-1/2 p-5">
+
+                    {/* Type */}
+                    <StatTable pokemon={pokemon!} species={species!} />
+                    <div className="mt-5">
+                        {flavorText}
+                    </div>
+                </div>
             </div>
         </div>
     );
 }
 
-function Image({ src: src }: { src: string }) {
+function StatTable({ pokemon, species }: { pokemon: Pokemon, species: PokemonSpecies }) {
+    const namedData = {
+        Name: pokemon.name,
+        Height: formatHeight(pokemon.height),
+        Weight: formatWeight(pokemon.weight),
+        Species: species.genera.find(v => v.language.name === "en")?.genus,
+        Type: <TypeView types={pokemon.types} />
+    };
+
+    const elements = []
+    for (const entry of Object.entries(namedData)) {
+        const name = entry[0]
+        const value = entry[1]
+        elements.push((<tr key={name} className="border-b border-b-slate-400">
+            <td className="pr-10 text-neutral-300">{name}</td>
+            <td>{value}</td>
+        </tr>))
+    }
+
     return (
-        <div className=" max-w-xs object-contain bg-purple-500">
+        <table>
+            <tbody>
+                {elements}
+            </tbody>
+        </table>
+    )
+}
+
+function Image({ src }: { src: string }) {
+    return (
+        <div className="max-w-xs object-contain bg-slate-200 border-2 border-slate-400 rounded-xl p-5">
             <img src={src} />
         </div>
     )
@@ -47,8 +78,8 @@ function TypeView({ types }: { types: PokemonType[] }) {
         const type = entry.type.name;
         const typeColor = getTypeColors(type);
         return (
-            <div key={type} className={typeColor.out()}>
-                {type}
+            <div key={type} className={typeColor.out() + "inline-flex rounded border border-orange-800 px-4 py-0 text-sm text-white"}>
+                {type.toUpperCase()}
             </div>
         )
     });
@@ -80,4 +111,18 @@ class TypeColor {
 
 function formatFlavorText(text: string) {
     return text.replace("\f", " ");
+}
+
+function formatHeight(height: number): string {
+    const heightMeters = height / 10;
+    const heightFeetInches = heightMeters * 3.28;
+    const heightFeet = Math.floor(heightFeetInches);
+    const heightInches = Math.round((heightFeetInches % 1) * 12);
+    return heightMeters.toString() + " m / " + heightFeet + "'" + heightInches + "\"";
+}
+
+function formatWeight(weight: number): string {
+    const weightKg = weight / 10;
+    const weightLbs = (weightKg * 2.205).toFixed(2);
+    return `${weightKg} kg / ${weightLbs} lbs`;
 }

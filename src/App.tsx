@@ -8,7 +8,10 @@ export default function App() {
     return (
         <>
             <h1 className="text-red-500">Pokedex App</h1>
-            <PokemonView pokemonName="charmeleon" data={charData} desc={charDescData} />
+            <div className="bg-red-400 flex justify-center">
+                <PokemonView pokemonName="mew" />
+            </div>
+
             {/* <DebugSpriteViewer pokeName="bulbasaur" /> */}
         </>
     )
