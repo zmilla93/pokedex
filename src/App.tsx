@@ -8,8 +8,8 @@ export default function App() {
     return (
         <>
             <h1 className="text-red-500">Pokedex App</h1>
-            {/* <PokemonView pokemonName="charmeleon" data={charData} desc={charDescData} /> */}
-            <DebugSpriteViewer pokeName="mewtwo" />
+            <PokemonView pokemonName="charmeleon" data={charData} desc={charDescData} />
+            {/* <DebugSpriteViewer pokeName="bulbasaur" /> */}
         </>
     )
 }
