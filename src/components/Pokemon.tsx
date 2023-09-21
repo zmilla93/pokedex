@@ -8,7 +8,7 @@ type PokemonViewProps = {
 
 export function PokemonView({ pokemonName }: PokemonViewProps) {
     // FIXME : Temp local name
-    pokemonName = "pikachu"
+    pokemonName = "bulbasaur"
     const pokeData = usePokemon(pokemonName);
     if (!validatePokemonData(pokeData)) return (<div>Loading...</div>);
     const { pokemon, species } = pokeData;
