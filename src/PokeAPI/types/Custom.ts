@@ -26,4 +26,17 @@ export type VersionGroupValue =
     | "legends-arceus"
     | "scarlet-violet"
     | "the-teal-mask"
-    | "the-indigo-disk"
+    | "the-indigo-disk";
+
+export type MoveLearnMethodValue =
+    "level-up"
+    | "egg"
+    | "tutor"
+    | "machine"
+    | "stadium-surfing-pikachu"
+    | "light-ball-egg"
+    | "colosseum-purification"
+    | "xd-shadow"
+    | "xd-purification"
+    | "form-change"
+    | "zygarde-cube";

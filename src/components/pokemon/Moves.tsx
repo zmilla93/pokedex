@@ -1,12 +1,13 @@
 import { useMoves } from "../../hooks/useMoves";
 
 export function PokemonMovesTable({ pokemonName }: { pokemonName: string }) {
-    const combinedMoveData = useMoves(pokemonName, "red-blue");
+    const moveList = useMoves(pokemonName, "red-blue");
     // const moveData = combinedMoveData
-    if (combinedMoveData === undefined) return;
+    if (moveList === undefined) return;
+    // if (learnedMoveData === undefined) return;
     const rowClass = "pr-20"
-    console.log(combinedMoveData);
-    const detailedMoveMap = combinedMoveData.map(entry => {
+    // console.log(combinedMoveData);
+    const detailedMoveMap = moveList.learnedMoves.map(entry => {
         const move = entry.move;
         const pokemonMove = entry.pokemonMove;
         const levelLearned = pokemonMove.version_group_details[0].level_learned_at;
