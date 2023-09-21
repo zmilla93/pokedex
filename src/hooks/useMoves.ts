@@ -21,73 +21,74 @@ export interface MoveList {
 export function useMoves(pokemonName: string, filter: VersionGroupValue | null = null) {
     const [moveList, setMoveList] = useState<MoveList>();
     useEffect(() => {
-        async function fetchData() {
-            // Get PokemonMove list
-            const pokemon = await api.getPokemon(pokemonName);
-            const moveList = filterMovesGameVersion(pokemon.moves, filter);
-            // Get detailed move data
-            const moves: Move[] = [];
-            const requests = moveList.map(entry => api.getMove(entry.move.name).catch(e => { console.log(e); return null }));
-            let responses = await Promise.all(requests);
-            // FIXME : Error handling
-            responses = responses.filter(response => response != null);
-            responses.forEach(response => moves.push(response!));
-            const combinedMoves: CombinedMove[] = [];
-            const nextLearnedMoves: CombinedMove[] = [];
-            const nextTmMoves: CombinedMove[] = [];
-            const nextHmMoves: CombinedMove[] = [];
-            const machineRequests: Promise<Machine>[] = [];
-            for (let i = 0; i < moveList.length; i++) {
-                const combinedMove: CombinedMove = {
-                    pokemonMove: moveList[i],
-                    move: responses[i]!,
-                    machine: null,
-                }
-                moveList[i].version_group_details.forEach(version => {
-                    const learnMethod = version.move_learn_method.name as MoveLearnMethodValue;
-                    if (learnMethod === "level-up") nextLearnedMoves.push(combinedMove);
-                    // If a move can be learned via a machine, make an additonal api request to get data about the machine
-                    else if (learnMethod === "machine") {
-                        combinedMove.move = filterMoveMachines(combinedMove.move, filter);
-                        // FIXME : Remove check?
-                        if (combinedMove.move.machines.length != 1) throw new Error(`Move machine list is not 1: ${combinedMove.move.name}`);
-                        const machineId = getMachineIdFromURL(combinedMove.move.machines[0].machine.url);
-                        machineRequests.push(api.getMachine(machineId));
-                    }
-                });
-                combinedMoves.push(combinedMove);
-            }
-            // Map machines back to corresponding moves
-            let machineResponses = await Promise.all(machineRequests);
-            machineResponses = machineResponses.filter(response => response != null);
-            let machineIndex = 0;
-            for (let i = 0; i < moveList.length; i++) {
-                moveList[i].version_group_details.forEach(version => {
-                    const learnMethod = version.move_learn_method.name as MoveLearnMethodValue;
-                    if (learnMethod === "machine") {
-                        const machine = machineResponses[machineIndex];
-                        const machineName = machine.item.name;
-                        combinedMoves[i].machine = machine;
-                        if (machineName.startsWith("tm")) nextTmMoves.push(combinedMoves[i]);
-                        else if (machineName.startsWith("hm")) nextHmMoves.push(combinedMoves[i])
-                        else console.error("Unknown machine type: " + machineName);
-                        machineIndex++;
-                    }
-                })
-            }
-            setMoveList({
-                learnedMoves: nextLearnedMoves,
-                tmMoves: nextTmMoves,
-                hmMoves: nextHmMoves,
-            });
-        }
-        fetchData();
+        (async () => {
+            const moveList = await fetchData(pokemonName, filter);
+            setMoveList(moveList);
+        })();
     }, [pokemonName, filter]);
-    // return [combinedMoveData, learnedMoves];
     return moveList;
 }
 
-
+async function fetchData(pokemonName: string, filter: VersionGroupValue | null): Promise<MoveList> {
+    // Get PokemonMove list
+    const pokemon = await api.getPokemon(pokemonName);
+    const pokemonMoveList = filterMovesGameVersion(pokemon.moves, filter);
+    // Get detailed move data
+    // const moves: Move[] = [];
+    const moveRequests = pokemonMoveList.map(entry => api.getMove(entry.move.name).catch(e => { console.log(e); return null }));
+    let moveResponses = await Promise.all(moveRequests);
+    // FIXME : Error handling
+    moveResponses = moveResponses.filter(response => response != null);
+    // moveResponses.forEach(response => moves.push(response!));
+    const combinedMoves: CombinedMove[] = [];
+    const nextLearnedMoves: CombinedMove[] = [];
+    const nextTmMoves: CombinedMove[] = [];
+    const nextHmMoves: CombinedMove[] = [];
+    const machineRequests: Promise<Machine>[] = [];
+    for (let i = 0; i < pokemonMoveList.length; i++) {
+        const combinedMove: CombinedMove = {
+            pokemonMove: pokemonMoveList[i],
+            move: moveResponses[i]!,
+            machine: null,
+        }
+        pokemonMoveList[i].version_group_details.forEach(version => {
+            const learnMethod = version.move_learn_method.name as MoveLearnMethodValue;
+            if (learnMethod === "level-up") nextLearnedMoves.push(combinedMove);
+            // If a move can be learned via a machine, make an additonal api request to get data about the machine
+            else if (learnMethod === "machine") {
+                combinedMove.move = filterMoveMachines(combinedMove.move, filter);
+                // FIXME : Remove check?
+                if (combinedMove.move.machines.length != 1) throw new Error(`Move machine list is not 1: ${combinedMove.move.name}`);
+                const machineId = getMachineIdFromURL(combinedMove.move.machines[0].machine.url);
+                machineRequests.push(api.getMachine(machineId));
+            }
+        });
+        combinedMoves.push(combinedMove);
+    }
+    // Map machines back to corresponding moves
+    let machineResponses = await Promise.all(machineRequests);
+    machineResponses = machineResponses.filter(response => response != null);
+    let machineIndex = 0;
+    for (let i = 0; i < pokemonMoveList.length; i++) {
+        pokemonMoveList[i].version_group_details.forEach(version => {
+            const learnMethod = version.move_learn_method.name as MoveLearnMethodValue;
+            if (learnMethod === "machine") {
+                const machine = machineResponses[machineIndex];
+                const machineName = machine.item.name;
+                combinedMoves[i].machine = machine;
+                if (machineName.startsWith("tm")) nextTmMoves.push(combinedMoves[i]);
+                else if (machineName.startsWith("hm")) nextHmMoves.push(combinedMoves[i])
+                else console.error("Unknown machine type: " + machineName);
+                machineIndex++;
+            }
+        })
+    }
+    return {
+        learnedMoves: nextLearnedMoves,
+        tmMoves: nextTmMoves,
+        hmMoves: nextHmMoves,
+    };
+}
 
 function filterMovesGameVersion(moveList: PokemonMove[], filter: VersionGroupValue | null) {
     if (filter === null) return moveList;

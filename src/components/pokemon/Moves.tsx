@@ -19,7 +19,8 @@ export function PokemonMovesTable({ pokemonName }: { pokemonName: string }) {
 
         return (<tr key={move.name}>
             <td className={rowClass}>{move.name}</td>
-            <td className={rowClass}>{move.damage_class.name}</td>
+            <td className={rowClass}>{move.type.name}</td>
+            {/* <td className={rowClass}>{move.damage_class.name}</td> */}
             <td className={rowClass}>{pokemonMove.version_group_details[0].move_learn_method.name}</td>
             <td className={rowClass}>{levelLearned > 0 && levelLearned}</td>
         </tr>
