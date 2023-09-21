@@ -1,5 +1,6 @@
 import { Pokemon, PokemonSpecies, PokemonType } from "../PokeAPI/types/Pokemon";
 import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
+import { PokemonMovesTable } from "./pokemon/Moves";
 
 type PokemonViewProps = {
     pokemonName: string,
@@ -7,7 +8,7 @@ type PokemonViewProps = {
 
 export function PokemonView({ pokemonName }: PokemonViewProps) {
     // FIXME : Temp local name
-    pokemonName = "chikorita"
+    pokemonName = "bulbasaur"
     const pokeData = usePokemon(pokemonName);
     if (!validatePokemonData(pokeData)) return (<div>Loading...</div>);
     const { pokemon, species } = pokeData;
@@ -18,21 +19,21 @@ export function PokemonView({ pokemonName }: PokemonViewProps) {
             <div className="">{pokemonName} | #{pokemon!.id}</div>
             <div className="">#{pokemon!.order}</div>
             <div className="bg-blue-300 flex max-w-6xl">
-
                 {/* Left Column */}
                 <div className="flex w-1/2 bg-orange-400 justify-center">
                     <Image src={imgSrc} />
                 </div>
                 {/* Right Column */}
                 <div className="w-1/2 p-5">
-
-                    {/* Type */}
                     <StatTable pokemon={pokemon!} species={species!} />
                     <div className="mt-5">
                         {flavorText}
                     </div>
                 </div>
+
+                {/* Move Table */}
             </div>
+            <PokemonMovesTable pokemonName={pokemonName} />
         </div>
     );
 }
@@ -78,7 +79,7 @@ function TypeView({ types }: { types: PokemonType[] }) {
         const type = entry.type.name;
         const typeColor = getTypeColors(type);
         return (
-            <div key={type} className={typeColor.out() + "inline-flex rounded border border-orange-800 px-4 py-0 text-sm text-white"}>
+            <div key={type} className={typeColor.out() + "inline-flex rounded border border-orange-800 px-4 py-0 text-sm text-white mr-2"}>
                 {type.toUpperCase()}
             </div>
         )

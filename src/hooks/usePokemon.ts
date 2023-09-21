@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import { PokeApi } from "../PokeAPI/PokeAPI";
+import api from "../PokeAPI/PokeAPI";
 import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
-
-const api = new PokeApi();
 
 export function usePokemon(pokemonName: string) {
     const [pokemon, setPokemon] = useState<Pokemon>();

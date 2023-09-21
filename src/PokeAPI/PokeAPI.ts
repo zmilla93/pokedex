@@ -303,5 +303,7 @@ export class PokeApi {
 			+ "\n================="
 		);
 	}
-
 }
+
+const api = new PokeApi();
+export default api;
