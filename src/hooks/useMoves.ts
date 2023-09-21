@@ -12,11 +12,11 @@ export function useMoves(pokemonName: string, filter: string | null = null) {
             const moveList = filterMoves(pokemon.moves, filter);
             // Get detailed move data
             const moves: Move[] = [];
-            for (let i = 0; i < moveList.length; i++) {
-                const entry = moveList[i];
-                const move = await api.getMove(entry.move.name);
-                moves.push(move);
-            }
+            const requests = moveList.map(entry => api.getMove(entry.move.name).catch(e => { console.log(e); return null }));
+            let responses = await Promise.all(requests);
+            responses = responses.filter(response => response != null);
+            // FIXME : Error handling
+            responses.forEach(response => moves.push(response!));
             setMoveData(moves);
         }
         fetchData();

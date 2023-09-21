@@ -7,11 +7,13 @@ export function usePokemon(pokemonName: string) {
     const [species, setSpecies] = useState<PokemonSpecies>();
     useEffect(() => {
         api.getPokemon(pokemonName)
-            .then(d => setPokemon(d));
+            .then(d => setPokemon(d))
+            .catch(e => console.error(e));
     }, [pokemonName]);
     useEffect(() => {
         api.getPokemonSpecies(pokemonName)
-            .then(d => setSpecies(d));
+            .then(d => setSpecies(d))
+            .catch(e => console.error(e));
     }, [pokemonName]);
     const data: PokemonData = {
         pokemon: pokemon,

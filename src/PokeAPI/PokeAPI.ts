@@ -38,7 +38,8 @@ export class PokeApi {
 				.then(data => {
 					if (!data.ok || data.status !== 200) throw new Error(`Failed to fetch data from '${endpoint}', status '${data.status}'.`);
 					return data.json();
-				});
+				})
+				.catch(e => { console.error(e); return undefined; });
 			this.cache[endpoint] = response;
 		}
 		return response as Promise<T>;
