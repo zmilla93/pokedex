@@ -69,7 +69,7 @@ function StatTable({ pokemon, species }: { pokemon: Pokemon, species: PokemonSpe
 
 function Image({ src }: { src: string }) {
     return (
-        <div className="max-w-xs object-contain bg-slate-200 border-2 border-slate-400 rounded-xl p-5">
+        <div className="max-w-xs bg-slate-200 border-2 border-slate-400 rounded-xl p-5 flex items-center">
             <img src={src} />
         </div>
     )

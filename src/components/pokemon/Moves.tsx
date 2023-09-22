@@ -6,7 +6,7 @@ import { TypeView } from "./TypeView";
 export type MoveTableType = "Level Up" | "TM" | "HM" | "Egg";
 
 export function PokemonMoveTables({ pokemonName }: { pokemonName: string, moveTableType?: MoveTableType }) {
-    const moveList = useMoves(pokemonName, "x-y");
+    const moveList = useMoves(pokemonName, "omega-ruby-alpha-sapphire");
     if (moveList === undefined) return;
     return (
         <>

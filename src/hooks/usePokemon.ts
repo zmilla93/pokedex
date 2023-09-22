@@ -4,17 +4,23 @@ import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
 
 export function usePokemon(pokemonName: string) {
     const [pokemon, setPokemon] = useState<Pokemon>();
+    const [speciesId, setSpeciesId] = useState<string | null>(null);
     const [species, setSpecies] = useState<PokemonSpecies>();
+    // const [speciesId, setSpeciesId]
     useEffect(() => {
         api.getPokemon(pokemonName)
-            .then(d => setPokemon(d))
+            .then(d => {
+                setPokemon(d);
+                setSpeciesId(d.species.name);
+            })
             .catch(e => console.error(e));
     }, [pokemonName]);
     useEffect(() => {
-        api.getPokemonSpecies(pokemonName)
+        if (speciesId === null) return;
+        api.getPokemonSpecies(speciesId)
             .then(d => setSpecies(d))
             .catch(e => console.error(e));
-    }, [pokemonName]);
+    }, [speciesId]);
     const data: PokemonData = {
         pokemon: pokemon,
         species: species,
