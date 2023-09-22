@@ -1,6 +1,6 @@
 import { Pokemon, PokemonSpecies, PokemonType } from "../PokeAPI/types/Pokemon";
 import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
-import { MoveTableType, PokemonMovesTable } from "./pokemon/Moves";
+import { MoveTableType, PokemonMoveTables } from "./pokemon/Moves";
 
 type PokemonViewProps = {
     pokemonName: string,
@@ -18,7 +18,7 @@ export function PokemonView({ pokemonName }: PokemonViewProps) {
         <div>
             <div className="">{pokemonName} | #{pokemon!.id}</div>
             <div className="">#{pokemon!.order}</div>
-            <div className="bg-blue-300 flex max-w-6xl">
+            <div className="bg-blue-300 flex max-w-7xl">
                 {/* Left Column */}
                 <div className="flex w-1/2 bg-orange-400 justify-center">
                     <Image src={imgSrc} />
@@ -33,7 +33,7 @@ export function PokemonView({ pokemonName }: PokemonViewProps) {
 
                 {/* Move Table */}
             </div>
-            <PokemonMovesTable pokemonName={pokemonName} moveTableType="Level" />
+            <PokemonMoveTables pokemonName={pokemonName} />
         </div>
     );
 }
