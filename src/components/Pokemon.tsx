@@ -1,6 +1,6 @@
 import { Pokemon, PokemonSpecies, PokemonType } from "../PokeAPI/types/Pokemon";
 import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
-import { PokemonMovesTable } from "./pokemon/Moves";
+import { MoveTableType, PokemonMovesTable } from "./pokemon/Moves";
 
 type PokemonViewProps = {
     pokemonName: string,
@@ -33,7 +33,7 @@ export function PokemonView({ pokemonName }: PokemonViewProps) {
 
                 {/* Move Table */}
             </div>
-            <PokemonMovesTable pokemonName={pokemonName} />
+            <PokemonMovesTable pokemonName={pokemonName} moveTableType="Level" />
         </div>
     );
 }
