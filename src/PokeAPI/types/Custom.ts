@@ -40,3 +40,25 @@ export type MoveLearnMethodValue =
     | "xd-purification"
     | "form-change"
     | "zygarde-cube";
+
+export type TypeValue =
+    "normal"
+    | "fighting"
+    | "flying"
+    | "poison"
+    | "ground"
+    | "rock"
+    | "bug"
+    | "ghost"
+    | "steel"
+    | "fire"
+    | "water"
+    | "grass"
+    | "electric"
+    | "psychic"
+    | "ice"
+    | "dragon"
+    | "dark"
+    | "fairy"
+    | "unknown"
+    | "shadow";

@@ -37,6 +37,9 @@ def processFile(inFileName, outFileName, func):
 
 
 # Process all files
+print("Processing data...")
 processFile("pokemon", None, nameConverter)
 processFile("version_groups", None, nameConverter)
 processFile("move_learn_method", None, nameConverter)
+processFile("types", None, nameConverter)
+print("Processing complete!")

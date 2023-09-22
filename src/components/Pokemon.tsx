@@ -1,6 +1,7 @@
 import { Pokemon, PokemonSpecies, PokemonType } from "../PokeAPI/types/Pokemon";
 import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
 import { MoveTableType, PokemonMoveTables } from "./pokemon/Moves";
+import { TypeView } from "./pokemon/TypeView";
 
 type PokemonViewProps = {
     pokemonName: string,
@@ -44,7 +45,7 @@ function StatTable({ pokemon, species }: { pokemon: Pokemon, species: PokemonSpe
         Height: formatHeight(pokemon.height),
         Weight: formatWeight(pokemon.weight),
         Species: species.genera.find(v => v.language.name === "en")?.genus,
-        Type: <TypeView types={pokemon.types} />
+        Type: <TypeView types={pokemon.types.map(entry => entry.type.name)} />
     };
 
     const elements = []
@@ -72,42 +73,6 @@ function Image({ src }: { src: string }) {
             <img src={src} />
         </div>
     )
-}
-
-function TypeView({ types }: { types: PokemonType[] }) {
-    const typeJsx = types.map((entry) => {
-        const type = entry.type.name;
-        const typeColor = getTypeColors(type);
-        return (
-            <div key={type} className={typeColor.out() + "inline-flex rounded border border-orange-800 px-4 py-0 text-sm text-white mr-2"}>
-                {type.toUpperCase()}
-            </div>
-        )
-    });
-
-    return (
-        <div>
-            {typeJsx}
-        </div>
-    )
-}
-
-function getTypeColors(type: string): TypeColor {
-    switch (type) {
-        case 'fire':
-            return new TypeColor("bg-orange-500", "text-black");
-        default:
-            return new TypeColor("bg-black", "white");
-    }
-}
-
-class TypeColor {
-    constructor(public background: string, public text?: string) {
-
-    }
-    out() {
-        return this.background + " " + this.text + " ";
-    }
 }
 
 function formatFlavorText(text: string) {
