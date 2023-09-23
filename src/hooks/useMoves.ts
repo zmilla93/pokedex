@@ -4,7 +4,7 @@ import { PokemonMove } from "../PokeAPI/types/Pokemon";
 import { Move } from '../PokeAPI/types/Moves';
 import { MoveLearnMethodValue, VersionGroupValue } from "../PokeAPI/types/Custom";
 import { Machine } from "../PokeAPI/types/Machines";
-import { getMachineIdFromURL } from "../PokeAPI/Utility";
+import { getMachineIdFromURL, isValidPokemon } from "../PokeAPI/Utility";
 
 export interface CombinedMove {
     pokemonMove: PokemonMove;   // Maps a Pokemon to a Move (learn method, level, etc)
@@ -20,13 +20,19 @@ export interface MoveList {
 }
 
 export function useMoves(pokemonName: string, filter: VersionGroupValue) {
+    const validName = isValidPokemon(pokemonName);
     const [moveList, setMoveList] = useState<MoveList>();
     useEffect(() => {
+        if (!validName) {
+            setMoveList(undefined);
+            return;
+        }
         (async () => {
             const moveList = await fetchData(pokemonName, filter);
             setMoveList(moveList);
+            console.log(moveList.learnedMoves);
         })();
-    }, [pokemonName, filter]);
+    }, [pokemonName, filter, validName]);
     return moveList;
 }
 
@@ -54,6 +60,7 @@ async function fetchData(pokemonName: string, filter: VersionGroupValue): Promis
             machine: null,
         }
         pokemonMoveList[i].version_group_details.forEach(version => {
+            console.log(pokemonMoveList[i].move.name + " : " + version.level_learned_at);
             const learnMethod = version.move_learn_method.name as MoveLearnMethodValue;
             if (learnMethod === "level-up") nextLearnedMoves.push(combinedMove);
             // If a move can be learned via a machine, make an additonal api request to get data about the machine

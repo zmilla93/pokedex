@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { CombinedMove, MoveList, useMoves } from "../../hooks/useMoves";
 import { cleanString, upperFirst } from '../../PokeAPI/Utility';
 import { TypeView } from "./TypeView";
+import { PokemonMove } from "../../PokeAPI/types/Pokemon";
 
 export type MoveTableType = "Level Up" | "TM" | "HM" | "Egg";
 

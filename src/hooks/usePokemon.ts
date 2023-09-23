@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import api from "../PokeAPI/PokeAPI";
 import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
+import { isValidPokemon } from '../PokeAPI/Utility';
 
 export function usePokemon(pokemonName: string) {
-    const [pokemon, setPokemon] = useState<Pokemon>();
-    const [speciesId, setSpeciesId] = useState<string | null>(null);
+    const [pokemon, setPokemon] = useState<Pokemon | undefined>();
+    const [speciesId, setSpeciesId] = useState<string | undefined>();
     const [species, setSpecies] = useState<PokemonSpecies>();
+    const validPokemonName = isValidPokemon(pokemonName);
     useEffect(() => {
-        if (pokemonName === "") {
-            setSpeciesId(null);
+        if (!validPokemonName) {
+            setPokemon(undefined);
+            setSpeciesId(undefined);
             return;
         }
         api.getPokemon(pokemonName)
@@ -17,9 +20,9 @@ export function usePokemon(pokemonName: string) {
                 setSpeciesId(d.species.name);
             })
             .catch(e => console.error(e));
-    }, [pokemonName]);
+    }, [pokemonName, validPokemonName]);
     useEffect(() => {
-        if (speciesId === null) return;
+        if (speciesId === undefined) return;
         api.getPokemonSpecies(speciesId)
             .then(d => setSpecies(d))
             .catch(e => console.error(e));

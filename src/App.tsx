@@ -1,10 +1,10 @@
-import { BrowserRouter, Link, Route, RouterProvider, Routes, createBrowserRouter, createHashRouter, createRoutesFromElements } from "react-router-dom";
+import { Route, RouterProvider, createBrowserRouter, createHashRouter, createRoutesFromElements } from "react-router-dom";
 import { PokemonView } from "./components/Pokemon";
 import { DebugSpriteViewer } from "./components/debug/DebugSpriteViewer";
 import { PageWrapper } from "./pages/PageWrapper";
-// const charData = require('../_project/data/charmeleon.json');
-// const charDescData = require('../_project/data/charmeleon_description.json');
 
+// Hash browser needs to be used when hosting on github pages
+// due to not having access to server side routing features.
 const useHashRouter = true;
 
 export default function App() {
@@ -18,10 +18,6 @@ export default function App() {
     );
     const routerBuilder = useHashRouter ? createHashRouter : createBrowserRouter;
     const router = routerBuilder(createRoutesFromElements(routerContents));
+    return <RouterProvider router={router}></RouterProvider>;
 
-    return (
-        <>
-            <RouterProvider router={router}></RouterProvider>
-        </>
-    )
 }
