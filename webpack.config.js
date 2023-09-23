@@ -22,12 +22,14 @@ const config = {
         filename: staticOutputFolder + '/scripts/[name].js',
         path: path.resolve(__dirname, buildFolder),
         clean: true,
+        // publicPath: '/',
     },
     devServer: {
         open: false,
         host: 'localhost',
         port: 8000,
         liveReload: true,
+        // historyApiFallback: true,
         client: {
             logging: 'none',
             progress: false,
@@ -39,6 +41,7 @@ const config = {
             filename: 'index.html',
             template: staticInputFolder + '/index.html',
             favicon: staticInputFolder + '/favicon.png',
+            // publicPath: '/',
             hash: false,
         }),
         new MiniCssExtractPlugin({

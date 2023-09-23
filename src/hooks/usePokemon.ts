@@ -6,8 +6,11 @@ export function usePokemon(pokemonName: string) {
     const [pokemon, setPokemon] = useState<Pokemon>();
     const [speciesId, setSpeciesId] = useState<string | null>(null);
     const [species, setSpecies] = useState<PokemonSpecies>();
-    // const [speciesId, setSpeciesId]
     useEffect(() => {
+        if (pokemonName === "") {
+            setSpeciesId(null);
+            return;
+        }
         api.getPokemon(pokemonName)
             .then(d => {
                 setPokemon(d);

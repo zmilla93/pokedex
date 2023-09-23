@@ -1,15 +1,12 @@
-import { Pokemon, PokemonSpecies, PokemonType } from "../PokeAPI/types/Pokemon";
+import { useParams } from "react-router-dom";
+import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
 import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
-import { MoveTableType, PokemonMoveTables } from "./pokemon/Moves";
+import { PokemonMoveTables } from "./pokemon/Moves";
 import { TypeView } from "./pokemon/TypeView";
 
-type PokemonViewProps = {
-    pokemonName: string,
-}
-
-export function PokemonView({ pokemonName }: PokemonViewProps) {
-    // FIXME : Temp local name
-    pokemonName = "bulbasaur"
+export function PokemonView() {
+    let { pokemonName } = useParams();
+    if (pokemonName === undefined) pokemonName = "";
     const pokeData = usePokemon(pokemonName);
     if (!validatePokemonData(pokeData)) return (<div>Loading...</div>);
     const { pokemon, species } = pokeData;
