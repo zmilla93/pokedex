@@ -30,7 +30,6 @@ export function useMoves(pokemonName: string, filter: VersionGroupValue) {
         (async () => {
             const moveList = await fetchData(pokemonName, filter);
             setMoveList(moveList);
-            console.log(moveList.learnedMoves);
         })();
     }, [pokemonName, filter, validName]);
     return moveList;
@@ -60,7 +59,6 @@ async function fetchData(pokemonName: string, filter: VersionGroupValue): Promis
             machine: null,
         }
         pokemonMoveList[i].version_group_details.forEach(version => {
-            console.log(pokemonMoveList[i].move.name + " : " + version.level_learned_at);
             const learnMethod = version.move_learn_method.name as MoveLearnMethodValue;
             if (learnMethod === "level-up") nextLearnedMoves.push(combinedMove);
             // If a move can be learned via a machine, make an additonal api request to get data about the machine

@@ -1,4 +1,5 @@
 import { Link, Outlet } from "react-router-dom";
+import { SearchBar } from "../components/SearchBox";
 
 export function PageWrapper() {
     return (
@@ -13,6 +14,7 @@ export function PageWrapper() {
                     <Link to="pokemon/fake">Fake</Link>
                 </div>
             </div>
+            <SearchBar />
             <h1 className="text-red-500">Pokedex App</h1>
             <div className="bg-red-400 flex justify-center">
                 <Outlet />

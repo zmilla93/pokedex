@@ -1,6 +1,5 @@
 import { Route, RouterProvider, createBrowserRouter, createHashRouter, createRoutesFromElements } from "react-router-dom";
 import { PokemonView } from "./components/Pokemon";
-import { DebugSpriteViewer } from "./components/debug/DebugSpriteViewer";
 import { PageWrapper } from "./pages/PageWrapper";
 
 // Hash browser needs to be used when hosting on github pages
