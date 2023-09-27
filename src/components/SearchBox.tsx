@@ -1,72 +1,160 @@
-import { ChangeEvent, EventHandler, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { pokemonNames } from '../utility/data';
+import Fuse from "fuse.js";
 
+const fuseOptions = {
+    isCaseSensitive: false,
+    // includeScore: false,
+    // shouldSort: true,
+    // includeMatches: false,
+    // findAllMatches: false,
+    // minMatchCharLength: 1,
+    // location: 0,
+    threshold: 0.0,
+    // distance: 100,
+    // useExtendedSearch: false,
+    // ignoreLocation: false,
+    // ignoreFieldNorm: false,
+    // fieldNormWeight: 1,
+}
+const fuse = new Fuse(pokemonNames, fuseOptions);
+
+type searchTermIndexCallback = (index: number) => void;
+
+// FIXME : Only 10 results are displayed, but searchResults.lengh is used for calculations. This leads to bugs like selectedIndex wrapping.
+// FIXME : Pokemon names should be formatted for display in search results
 export function SearchBar() {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
     const textInputRef = useRef(null);
     const searchTermsRef = useRef(null);
+    const [searchBoxFocused, setSearchBoxFocused] = useState(false);
+    const [searchResults, setSearchResults] = useState<Fuse.FuseResult<string>[]>([]);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
 
-    function handleClick() {
-        // alert("!");
-        navigate("/pokemon/paras");
+    function adjustSelectedIndex(shift: number) {
+        let newIndex = selectedIndex + shift;
+        if (newIndex < 0) newIndex = searchResults.length - 1;
+        else if (newIndex >= searchResults.length) newIndex = 0;
+        setSelectedIndex(newIndex);
     }
 
     function handleKey(e: React.KeyboardEvent<HTMLInputElement>) {
-        console.log(e.key);
-        if (e.key === "Enter") {
-            // TODO
-
+        const key = e.key;
+        switch (key) {
+            case "Enter":
+                setSelectedIndex(-1);
+                submitSearch();
+                break;
+            case "ArrowUp":
+                e.preventDefault();
+                adjustSelectedIndex(-1);
+                break;
+            case "ArrowDown":
+                e.preventDefault();
+                adjustSelectedIndex(1);
+                break;
         }
     }
 
-    function handleInput(e: React.FormEvent) {
-        // console.log();
+    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+        e.preventDefault();
+        const nextSearchTerm = e.target.value;
+        const nextResults = fuse.search(nextSearchTerm);
+        setSelectedIndex(-1);
+        setSearchTerm(nextSearchTerm);
+        setSearchResults(nextResults);
+        adjustDropdownVisibility(searchBoxFocused, nextResults);
     }
-
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) { setSearchTerm(e.target.value); }
 
     function handleFocus(e: React.FocusEvent<HTMLInputElement, Element>) {
-        const focused = e.target === document.activeElement;
+        const nextFocused = e.target === document.activeElement;
+        setSearchBoxFocused(nextFocused);
+        adjustDropdownVisibility(nextFocused, searchResults);
+    }
+
+    function adjustDropdownVisibility(nextFocus: boolean, nextSearchResults: Fuse.FuseResult<string>[]) {
         if (searchTermsRef.current === null) return;
         const searchTermsDiv = searchTermsRef.current as HTMLDivElement;
-        searchTermsDiv.style.display = focused ? "block" : "none";
+        let show = true;
+        if (!nextFocus) show = false;
+        if (nextSearchResults.length < 1) show = false;
+        searchTermsDiv.style.display = show ? "block" : "none";
     }
+
+    function handleMouseOver(index: number): void {
+        setSelectedIndex(index);
+    }
+
+    function submitSearch(nextSearchTerm = searchTerm) {
+        if (selectedIndex > -1) {
+            nextSearchTerm = searchResults[selectedIndex].item;
+            setSearchTerm(nextSearchTerm);
+        }
+        if (textInputRef.current != null) {
+            const textInput = textInputRef.current as HTMLDivElement;
+            textInput.blur();
+        }
+        navigate("/pokemon/" + nextSearchTerm);
+        setSearchTerm("");
+    }
+
+    function handleSearchTermClick(index: number) {
+        submitSearch();
+    }
+
+    const resultElements = searchResults.map((value, index) => {
+        if (index > 10) return null;
+        return <SearchElement
+            key={value.item}
+            value={value.item}
+            index={index}
+            selectedIndex={selectedIndex}
+            onMouseOver={handleMouseOver}
+            onClick={handleSearchTermClick}
+        />
+    })
 
     return (
         <>
-
             <span className="relative">
-                <input type="text" ref={textInputRef} value={searchTerm} placeholder="Search..." onChange={handleChange} onFocus={handleFocus} onBlur={handleFocus} className="border border-black rounded focus:outline-none relative"></input>
+
+                <input type="text" ref={textInputRef}
+                    className="border border-black rounded focus:outline-none relative"
+                    value={searchTerm}
+                    placeholder="Search..."
+                    onChange={handleChange}
+                    onFocus={handleFocus}
+                    onBlur={handleFocus}
+                    onKeyDown={handleKey}
+                />
+
                 <button className="border border-green-600 rounded bg-green-300 hover:bg-green-400 px-4 ml-1">Search</button>
-
-                {/* <div className="border-t opacity-0"> */}
-                <div ref={searchTermsRef} className="border border-black w-fit p-1 rounded-sm absolute mt-[1px] bg-white hidden">
-                    <SearchElement text="Charmander" />
-                    <SearchElement text="Oddish" />
-                    <SearchElement text="Zapdos" />
+                <div ref={searchTermsRef} className="border border-black w-fit min-w-full p-1 rounded-sm absolute mt-[1px] bg-white hidden">
+                    {resultElements}
                 </div>
-                {/* </div> */}
             </span>
-
-
-            {/* <br></br>
-            <h1>V2</h1>
-            <input list="searchOptions" className="border border-black rounded" placeholder="Search..." onFocus={handleFocus} onChange={handleChange} onInput={handleInput} onKeyDown={handleKey} value={searchTerm} />
-            <datalist id="searchOptions">
-                <option value="pk1" />
-                <option value="pk2" />
-                <option value="pk3" />
-            </datalist>
-            <button onClick={handleClick}>Click Me!</button> */}
+            <input type="text"></input>
         </>
     );
 }
 
-function SearchElement({ text, onClick }: { text: string, onClick?: Event }) {
+interface SearchElementParams {
+    value: string;
+    index: number;
+    selectedIndex: number,
+    onMouseOver: searchTermIndexCallback,
+    onClick: searchTermIndexCallback,
+}
+
+function SearchElement({ value, index, selectedIndex, onMouseOver, onClick }: SearchElementParams) {
+    let className = "cursor-pointer";
+    const selectedClassName = "text-red-500";
+    if (index === selectedIndex) className += " " + selectedClassName;
     return (
-        <div className="hover:text-red-400 cursor-pointer">
-            {text}
+        <div className={className} onMouseOver={() => onMouseOver(index)} onMouseDown={() => onClick(index)}>
+            {value}
         </div>
     );
 }
