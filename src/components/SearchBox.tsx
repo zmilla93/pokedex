@@ -21,8 +21,8 @@ const fuseOptions = {
 const fuse = new Fuse(pokemonNames, fuseOptions);
 
 type searchTermIndexCallback = (index: number) => void;
+const MAX_SEARCH_RESULTS = 10;
 
-// FIXME : Only 10 results are displayed, but searchResults.lengh is used for calculations. This leads to bugs like selectedIndex wrapping.
 // FIXME : Pokemon names should be formatted for display in search results
 export function SearchBar() {
     const navigate = useNavigate();
@@ -61,7 +61,7 @@ export function SearchBar() {
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         e.preventDefault();
         const nextSearchTerm = e.target.value;
-        const nextResults = fuse.search(nextSearchTerm);
+        const nextResults = fuse.search(nextSearchTerm).filter((_, index) => index < MAX_SEARCH_RESULTS);
         setSelectedIndex(-1);
         setSearchTerm(nextSearchTerm);
         setSearchResults(nextResults);
@@ -105,7 +105,6 @@ export function SearchBar() {
     }
 
     const resultElements = searchResults.map((value, index) => {
-        if (index > 10) return null;
         return <SearchElement
             key={value.item}
             value={value.item}
