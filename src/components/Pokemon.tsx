@@ -14,7 +14,6 @@ export function PokemonView() {
     const { pokemon, species } = pokeData;
     const flavorText = formatFlavorText(species!.flavor_text_entries[0].flavor_text);
     const imgSrc = pokemon!.sprites.other["official-artwork"].front_default;
-    console.log("rendering " + pokemonName + "...");
     return (
         <div key={pokemonName}>
             <div className="">{pokemonName} | #{pokemon!.id}</div>

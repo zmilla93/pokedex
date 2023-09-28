@@ -5,6 +5,7 @@ import { Move } from '../PokeAPI/types/Moves';
 import { MoveLearnMethodValue, VersionGroupValue } from "../PokeAPI/types/Custom";
 import { Machine } from "../PokeAPI/types/Machines";
 import { getMachineIdFromURL, isValidPokemon } from "../PokeAPI/Utility";
+import assert from "../utility/assert";
 
 export interface CombinedMove {
     pokemonMove: PokemonMove;   // Maps a Pokemon to a Move (learn method, level, etc)
@@ -60,13 +61,16 @@ async function fetchData(pokemonName: string, filter: VersionGroupValue): Promis
         };
         pokemonMoveList[i].version_group_details.forEach(version => {
             const learnMethod = version.move_learn_method.name as MoveLearnMethodValue;
-            if (learnMethod === "level-up") nextLearnedMoves.push(combinedMove);
-            // If a move can be learned via a machine, make an additonal api request to get data about the machine
+            if (learnMethod === "level-up") {
+                // Level up moves may have multiple entries for different levels, but should only be stored once.
+                if (nextLearnedMoves.includes(combinedMove)) return;
+                nextLearnedMoves.push(combinedMove);
+            }
             else if (learnMethod === "egg") nextEggMoves.push(combinedMove);
+            // If a move can be learned via a machine, make an additonal api request to get data about the machine
             else if (learnMethod === "machine") {
                 combinedMove.move = filterMachines(combinedMove.move, filter);
-                // FIXME : Remove check?
-                if (combinedMove.move.machines.length != 1) throw new Error(`Move machine list is not 1: ${combinedMove.move.name}`);
+                assert(() => combinedMove.move.machines.length === 1, `Move machine list is not 1 for move "${combinedMove.move.name}".`);
                 const machineId = getMachineIdFromURL(combinedMove.move.machines[0].machine.url);
                 machineRequests.push(api.getMachine(machineId));
             }
@@ -91,6 +95,7 @@ async function fetchData(pokemonName: string, filter: VersionGroupValue): Promis
             }
         });
     }
+    // FIXME : Remove learned by pokemon lists? It is a huge amount of data that goes unused
     return {
         learnedMoves: nextLearnedMoves,
         tmMoves: nextTmMoves,
