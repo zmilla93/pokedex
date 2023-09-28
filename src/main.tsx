@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import './main.css'
+import './main.css';
 
 const strict = true;
 const app = <App />;

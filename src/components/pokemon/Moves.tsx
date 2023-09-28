@@ -16,7 +16,7 @@ export function PokemonMoveTables({ pokemonName }: { pokemonName: string, moveTa
             <PokemonMoveTable moveList={moveList} moveTableType="HM" />
             <PokemonMoveTable moveList={moveList} moveTableType="Egg" />
         </>
-    )
+    );
 }
 
 function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, moveTableType: MoveTableType }) {
@@ -30,8 +30,8 @@ function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, mov
         const pokemonMove = entry.pokemonMove;
         const levelLearned = pokemonMove.version_group_details[0].level_learned_at;
         // FIXME : Remove debug checks?
-        if (move.name != pokemonMove.move.name) throw new Error(`Move mismatch! ${move.name} : ${pokemonMove.move.name}`)
-        if (pokemonMove.version_group_details.length < 1) console.error(`Version group details not length 1: ${move.name}`)
+        if (move.name != pokemonMove.move.name) throw new Error(`Move mismatch! ${move.name} : ${pokemonMove.move.name}`);
+        if (pokemonMove.version_group_details.length < 1) console.error(`Version group details not length 1: ${move.name}`);
         return (
             <tr key={move.name}>
                 <td className={rowClass}>{cleanString(move.name)}</td>
@@ -41,8 +41,8 @@ function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, mov
                 <td className={rowClass}>{move.accuracy ? move.accuracy : "-"}</td>
                 {moveTableType == "Level Up" && <td className={rowClass}>{levelLearned}</td>}
             </tr>
-        )
-    })
+        );
+    });
     return (
         <>
             <h1>{moveTableType} Moves</h1>
@@ -72,7 +72,7 @@ function TableHeader({ children }: { children: string }) {
         <td className="pr-20">
             {children}
         </td>
-    )
+    );
 }
 
 function TableData({ children }: { children: string }) {
@@ -80,7 +80,7 @@ function TableData({ children }: { children: string }) {
         <td className="pr-20">
             {children}
         </td>
-    )
+    );
 }
 
 

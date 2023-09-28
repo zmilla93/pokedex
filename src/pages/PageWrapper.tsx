@@ -20,6 +20,6 @@ export function PageWrapper() {
                 <Outlet />
             </div>
         </>
-    )
+    );
 }
 

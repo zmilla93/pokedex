@@ -4,5 +4,5 @@ export function PokemonPage() {
         <div>
             Pokemon Page!
         </div>
-    )
+    );
 }

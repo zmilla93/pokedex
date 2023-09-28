@@ -29,16 +29,16 @@ export function DebugSpriteViewer({ pokeName }: { pokeName: string | null }) {
                 <div key={image.name} className="border-2 border-orange-500 rounded m-2 shrink">
                     <img src={image.src} className="self-center" title={image.name} />
                 </div>
-            )
-        })
+            );
+        });
     }
 
     function getMissing() {
         return missing.map(value => {
             return (
                 <div key={value}>{value}</div>
-            )
-        })
+            );
+        });
     }
 
     function getStatus() {
@@ -48,8 +48,8 @@ export function DebugSpriteViewer({ pokeName }: { pokeName: string | null }) {
                 <div key={entry.name} className={className}>
                     {entry.name}
                 </div>
-            )
-        })
+            );
+        });
     }
     if (targetData === undefined) return (<div>Loading...</div>);
 

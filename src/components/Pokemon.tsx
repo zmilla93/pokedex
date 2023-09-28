@@ -45,14 +45,14 @@ function StatTable({ pokemon, species }: { pokemon: Pokemon, species: PokemonSpe
         Type: <TypeView types={pokemon.types.map(entry => entry.type.name)} />
     };
 
-    const elements = []
+    const elements = [];
     for (const entry of Object.entries(namedData)) {
-        const name = entry[0]
-        const value = entry[1]
+        const name = entry[0];
+        const value = entry[1];
         elements.push((<tr key={name} className="border-b border-b-slate-400">
             <td className="pr-10 text-neutral-300">{name}</td>
             <td>{value}</td>
-        </tr>))
+        </tr>));
     }
 
     return (
@@ -61,7 +61,7 @@ function StatTable({ pokemon, species }: { pokemon: Pokemon, species: PokemonSpe
                 {elements}
             </tbody>
         </table>
-    )
+    );
 }
 
 function Image({ src }: { src: string }) {
@@ -69,7 +69,7 @@ function Image({ src }: { src: string }) {
         <div className="max-w-xs bg-slate-200 border-2 border-slate-400 rounded-xl p-5 flex items-center">
             <img src={src} />
         </div>
-    )
+    );
 }
 
 function formatFlavorText(text: string) {

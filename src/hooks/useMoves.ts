@@ -41,7 +41,7 @@ async function fetchData(pokemonName: string, filter: VersionGroupValue): Promis
     const pokemonMoveList = filterMovesGameVersion(pokemon.moves, filter);
     // Get detailed move data
     // const moves: Move[] = [];
-    const moveRequests = pokemonMoveList.map(entry => api.getMove(entry.move.name).catch(e => { console.log(e); return null }));
+    const moveRequests = pokemonMoveList.map(entry => api.getMove(entry.move.name).catch(e => { console.log(e); return null; }));
     let moveResponses = await Promise.all(moveRequests);
     // FIXME : Error handling
     moveResponses = moveResponses.filter(response => response != null);
@@ -57,7 +57,7 @@ async function fetchData(pokemonName: string, filter: VersionGroupValue): Promis
             pokemonMove: pokemonMoveList[i],
             move: moveResponses[i]!,
             machine: null,
-        }
+        };
         pokemonMoveList[i].version_group_details.forEach(version => {
             const learnMethod = version.move_learn_method.name as MoveLearnMethodValue;
             if (learnMethod === "level-up") nextLearnedMoves.push(combinedMove);
@@ -85,11 +85,11 @@ async function fetchData(pokemonName: string, filter: VersionGroupValue): Promis
                 const machineName = machine.item.name;
                 combinedMoves[i].machine = machine;
                 if (machineName.startsWith("tm")) nextTmMoves.push(combinedMoves[i]);
-                else if (machineName.startsWith("hm")) nextHmMoves.push(combinedMoves[i])
+                else if (machineName.startsWith("hm")) nextHmMoves.push(combinedMoves[i]);
                 else console.error("Unknown machine type: " + machineName);
                 machineIndex++;
             }
-        })
+        });
     }
     return {
         learnedMoves: nextLearnedMoves,
@@ -103,9 +103,9 @@ function filterMovesGameVersion(moveList: PokemonMove[], filter: VersionGroupVal
     if (filter === null) return moveList;
     const filteredMoves = moveList.filter(
         entry => {
-            entry.version_group_details = entry.version_group_details.filter(version => version.version_group.name === filter)
+            entry.version_group_details = entry.version_group_details.filter(version => version.version_group.name === filter);
             return entry.version_group_details.length > 0;
-        })
+        });
     return filteredMoves;
 }
 

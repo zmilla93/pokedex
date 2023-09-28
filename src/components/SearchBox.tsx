@@ -17,7 +17,7 @@ const fuseOptions = {
     // ignoreLocation: false,
     // ignoreFieldNorm: false,
     // fieldNormWeight: 1,
-}
+};
 const fuse = new Fuse(pokemonNames, fuseOptions);
 
 type searchTermIndexCallback = (index: number) => void;
@@ -113,8 +113,8 @@ export function SearchBar() {
             selectedIndex={selectedIndex}
             onMouseOver={handleMouseOver}
             onClick={handleSearchTermClick}
-        />
-    })
+        />;
+    });
 
     return (
         <>

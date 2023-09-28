@@ -5,5 +5,5 @@ export function HomePage() {
         <div>
             Homepage!
         </div>
-    )
+    );
 }

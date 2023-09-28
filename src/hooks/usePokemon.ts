@@ -30,7 +30,7 @@ export function usePokemon(pokemonName: string) {
     const data: PokemonData = {
         pokemon: pokemon,
         species: species,
-    }
+    };
     return data;
 }
 

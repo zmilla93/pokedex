@@ -6,11 +6,11 @@ export function Test() {
     useEffect(() => {
         console.log(count);
         setCount(13);
-    }, [count])
+    }, [count]);
 
     return (
         <div>
             Testing!
         </div>
-    )
+    );
 }

@@ -6,14 +6,14 @@ export function TypeView({ types }: { types: string[] }) {
             <div key={entry} className={typeColor.out() + "inline-flex rounded border border-white-800 py-1 text-sm text-white w-20 justify-center"}>
                 {entry.toUpperCase()}
             </div>
-        )
+        );
     });
 
     return (
         <div>
             {typeJsx}
         </div>
-    )
+    );
 }
 
 function getTypeColors(type: string): TypeColor {
