@@ -23,7 +23,7 @@ function getMoveElement(entry: CombinedMove, moveTableType: MoveTableType, versi
     const rowClass = "pr-6";
     const move = entry.move;
     const levelLearned = version.level_learned_at;
-    return (
+    const element = (
         <tr key={move.name + levelLearned}>
             <td className={rowClass}>{cleanString(move.name)}</td>
             <td className={rowClass}>{<TypeView types={[move.type.name]} />}</td>
@@ -32,6 +32,7 @@ function getMoveElement(entry: CombinedMove, moveTableType: MoveTableType, versi
             {moveTableType == "Level Up" && <td className={rowClass}>{levelLearned}</td>}
         </tr>
     );
+    return new MoveElement(entry, version, element);
 }
 
 function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, moveTableType: MoveTableType }) {
@@ -39,7 +40,7 @@ function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, mov
     // FIXME : Show a message that no moves are present?
     // If the target move list has no entries, don't render anything
     // if (targetMoveList.length == 0) return;
-    const moveListElements: ReactElement[] = [];
+    const moveListElements: MoveElement[] = [];
     targetMoveList.forEach(entry => {
         const move = entry.move;
         const pokemonMove = entry.pokemonMove;
@@ -54,8 +55,8 @@ function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, mov
             });
         } else moveListElements.push(getMoveElement(entry, moveTableType));
     });
-
-    // FIXME : Elements need to be sorted
+    // moveListElements.sort(sortByLevel);
+    moveListElements.sort(sortByName);
 
     return (
         <>
@@ -72,7 +73,7 @@ function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, mov
                         </tr>
                     </thead>
                     <tbody>
-                        {moveListElements}
+                        {moveListElements.map(entry => entry.element)}
                     </tbody>
                 </table>
             </div>
@@ -112,12 +113,25 @@ function getTargetMoveTable(moveList: MoveList, moveTableType: MoveTableType) {
 }
 
 // Sorting Functions
+// FIXME : Revisit secondary sorting options
 
-function sortByLevel(moveA: CombinedMove, moveB: CombinedMove) {
-    const levelA = moveA.pokemonMove.version_group_details[0].level_learned_at;
-    const levelB = moveB.pokemonMove.version_group_details[0].level_learned_at;
+function sortByName(moveA: MoveElement, moveB: MoveElement): number {
+    const nameA = moveA.move.move.name;
+    const nameB = moveB.move.move.name;
+    if (nameA < nameB) return -1;
+    if (nameA > nameB) return 1;
+    if (moveA.version.level_learned_at === moveB.version.level_learned_at) return 0;
+    return sortByLevel(moveA, moveB);
+}
+
+function sortByLevel(moveA: MoveElement, moveB: MoveElement): number {
+    const levelA = moveA.version.level_learned_at;
+    const levelB = moveB.version.level_learned_at;
     if (levelA < levelB) return -1;
     if (levelA > levelB) return 1;
-    // FIXME : If levels are the same, sort by name instead
-    return 0;
+    return sortByName(moveA, moveB);
+}
+
+class MoveElement {
+    constructor(public move: CombinedMove, public version: PokemonMoveVersion, public element: ReactElement) { }
 }
