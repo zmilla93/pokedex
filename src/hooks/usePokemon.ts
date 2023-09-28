@@ -8,10 +8,18 @@ export function usePokemon(pokemonName: string) {
     const [speciesId, setSpeciesId] = useState<string | undefined>();
     const [species, setSpecies] = useState<PokemonSpecies>();
     const validPokemonName = isValidPokemon(pokemonName);
+    function clearData() {
+        setPokemon(undefined);
+        setSpeciesId(undefined);
+        setSpecies(undefined);
+    }
+    // If the pokemon being used doesn't match the cached data, clear the cache.
+    // This allows a loading bar to be shown when the target pokemon is changed instead of showing stale data.
+    if (pokemon != null && pokemon.name !== pokemonName) clearData();
+    // Fetch data
     useEffect(() => {
         if (!validPokemonName) {
-            setPokemon(undefined);
-            setSpeciesId(undefined);
+            clearData();
             return;
         }
         api.getPokemon(pokemonName)

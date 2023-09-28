@@ -3,17 +3,20 @@ import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
 import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
 import { PokemonMoveTables } from "./pokemon/Moves";
 import { TypeView } from "./pokemon/TypeView";
+import { isValidPokemon } from "../PokeAPI/Utility";
 
 export function PokemonView() {
     let { pokemonName } = useParams();
     if (pokemonName === undefined) pokemonName = "";
     const pokeData = usePokemon(pokemonName);
+    if (!isValidPokemon(pokemonName)) return (<div>Invalid pokemon!</div>);
     if (!validatePokemonData(pokeData)) return (<div>Loading...</div>);
     const { pokemon, species } = pokeData;
     const flavorText = formatFlavorText(species!.flavor_text_entries[0].flavor_text);
     const imgSrc = pokemon!.sprites.other["official-artwork"].front_default;
+    console.log("rendering " + pokemonName + "...");
     return (
-        <div>
+        <div key={pokemonName}>
             <div className="">{pokemonName} | #{pokemon!.id}</div>
             <div className="">#{pokemon!.order}</div>
             <div className="bg-blue-300 flex max-w-7xl">
