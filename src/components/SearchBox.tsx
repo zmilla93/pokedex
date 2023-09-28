@@ -19,9 +19,9 @@ const fuseOptions = {
     // fieldNormWeight: 1,
 };
 const fuse = new Fuse(pokemonNames, fuseOptions);
+const MAX_SEARCH_RESULTS = 10;
 
 type searchTermIndexCallback = (index: number) => void;
-const MAX_SEARCH_RESULTS = 10;
 
 // FIXME : Pokemon names should be formatted for display in search results
 export function SearchBar() {
@@ -100,7 +100,7 @@ export function SearchBar() {
         setSearchTerm("");
     }
 
-    function handleSearchTermClick(index: number) {
+    function handleSearchTermClick() {
         submitSearch();
     }
 
@@ -129,7 +129,7 @@ export function SearchBar() {
                     onKeyDown={handleKey}
                 />
 
-                <button className="border border-green-600 rounded bg-green-300 hover:bg-green-400 px-4 ml-1">Search</button>
+                <button className="border border-green-600 rounded bg-green-300 hover:bg-green-400 px-4 ml-1" onClick={() => submitSearch()}>Search</button>
                 <div ref={searchTermsRef} className="border border-black w-fit min-w-full p-1 rounded-sm absolute mt-[1px] bg-white hidden">
                     {resultElements}
                 </div>
