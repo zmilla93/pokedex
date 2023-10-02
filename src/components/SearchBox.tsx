@@ -98,6 +98,8 @@ export function SearchBar() {
         }
         navigate("/pokemon/" + nextSearchTerm);
         setSearchTerm("");
+        setSelectedIndex(-1);
+        setSearchResults([]);
     }
 
     function handleSearchTermClick() {
