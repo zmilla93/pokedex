@@ -72,9 +72,8 @@ function StatTable({ pokemon, species }: { pokemon: Pokemon, species: PokemonSpe
 
 function PokemonImage({ src, srcShiny }: { src: string, srcShiny: string }) {
     const [shiny, setShiny] = useState(false);
-    const starSrc = shiny ? starFull : starEmpty;
-    const defaultClass = shiny ? "hidden" : "";
-    const shinyClass = shiny ? "" : "hidden";
+    const defaultVisibility = shiny ? "hidden" : "";
+    const shinyVisiblity = shiny ? "" : "hidden";
 
     function handleShinyClick() {
         setShiny(!shiny);
@@ -82,10 +81,10 @@ function PokemonImage({ src, srcShiny }: { src: string, srcShiny: string }) {
 
     return (
         <div className="relative max-w-xs bg-slate-200 border-2 border-slate-400 rounded-xl p-5 flex items-center">
-            <img src={src} className={defaultClass} />
-            <img src={srcShiny} className={shinyClass} />
-            <ShinyButton src={starEmpty} onClick={handleShinyClick} className={defaultClass} />
-            <ShinyButton src={starFull} onClick={handleShinyClick} className={shinyClass} />
+            <img src={src} className={defaultVisibility} />
+            <img src={srcShiny} className={shinyVisiblity} />
+            <ShinyButton src={starEmpty} onClick={handleShinyClick} className={defaultVisibility} />
+            <ShinyButton src={starFull} onClick={handleShinyClick} className={shinyVisiblity} />
         </div>
     );
 }
