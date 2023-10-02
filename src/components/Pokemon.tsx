@@ -89,7 +89,7 @@ function Image({ src, srcShiny }: { src: string, srcShiny: string }) {
     return (
         <div className="relative max-w-xs bg-slate-200 border-2 border-slate-400 rounded-xl p-5 flex items-center">
             <img src={imgSrc} />
-            <img className="absolute right-1 bottom-1 cursor-pointer" src={starSrc} onClick={handleShinyClick} />
+            <img className="absolute right-1 bottom-1 cursor-pointer" src={starSrc} title="Toggle Shiny" onClick={handleShinyClick} />
         </div>
     );
 }
