@@ -80,6 +80,9 @@ const config = {
     },
     // https://webpack.js.org/configuration/resolve/
     resolve: {
+        alias: {
+            Icons: path.resolve(__dirname, 'public/icons/'),
+        },
         extensions: ['.tsx', '.ts', '.jsx', '.js', '...'],
     },
     // https://webpack.js.org/configuration/optimization/

@@ -7,8 +7,8 @@ import { isValidPokemon } from "../PokeAPI/Utility";
 import { useEffect, useState } from "react";
 import { preloadImage } from "../utility/util";
 
-const starEmpty = require("../../public/icons/star-outline.svg");
-const starFull = require("../../public/icons/star-full-outline.svg");
+const starEmpty = require("Icons/star-outline.svg");
+const starFull = require("Icons/star-full-outline.svg");
 
 export function PokemonView() {
     let { pokemonName } = useParams();
