@@ -27,7 +27,7 @@ export function PokemonView() {
             <div className="bg-blue-300 flex max-w-7xl">
                 {/* Left Column */}
                 <div className="flex w-1/2 bg-orange-400 justify-center">
-                    <Image src={imgSrc} srcShiny={imgShinySrc} />
+                    <PokemonImage src={imgSrc} srcShiny={imgShinySrc} />
                 </div>
                 {/* Right Column */}
                 <div className="w-1/2 p-5">
@@ -70,30 +70,31 @@ function StatTable({ pokemon, species }: { pokemon: Pokemon, species: PokemonSpe
     );
 }
 
-function Image({ src, srcShiny }: { src: string, srcShiny: string }) {
+function PokemonImage({ src, srcShiny }: { src: string, srcShiny: string }) {
     const [shiny, setShiny] = useState(false);
     const starSrc = shiny ? starFull : starEmpty;
-    const imgSrc = shiny ? srcShiny : src;
-
-    useEffect(() => {
-        preloadImage(src);
-        preloadImage(srcShiny);
-        setShiny(false);
-    }, [src, srcShiny]);
+    const defaultClass = shiny ? "hidden" : "";
+    const shinyClass = shiny ? "" : "hidden";
 
     function handleShinyClick() {
-        const nextShiny = !shiny;
-        setShiny(nextShiny);
+        setShiny(!shiny);
     }
 
     return (
         <div className="relative max-w-xs bg-slate-200 border-2 border-slate-400 rounded-xl p-5 flex items-center">
-            <img src={imgSrc} />
-            <img className="absolute right-1 bottom-1 cursor-pointer" src={starSrc} title="Toggle Shiny" onClick={handleShinyClick} />
+            <img src={src} className={defaultClass} />
+            <img src={srcShiny} className={shinyClass} />
+            <ShinyButton src={starEmpty} onClick={handleShinyClick} className={defaultClass} />
+            <ShinyButton src={starFull} onClick={handleShinyClick} className={shinyClass} />
         </div>
     );
 }
 
+function ShinyButton({ src, className, onClick }: { src: string, className: string, onClick: React.MouseEventHandler }) {
+    return <img className={className + " absolute right-1 bottom-1 cursor-pointer"} src={src} title="Toggle Shiny" onClick={onClick} />;
+}
+
+// FIXME : Make this more robust and move to utility
 function formatFlavorText(text: string) {
     return text.replace("\f", " ");
 }
