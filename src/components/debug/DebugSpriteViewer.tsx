@@ -55,7 +55,9 @@ export function DebugSpriteViewer({ pokeName }: { pokeName: string | null }) {
 
     return (
         <div>
-            <h1>Debug Sprite Viewer: {targetData.name}</h1>
+            <h1 className="border-2 border-white rounded w-fit m-2 px-4 py-1 text-white text-lg">
+                Debug Sprite Viewer: {targetData.name}
+            </h1>
             <div className="flex flex-wrap items-center">
                 {getImages()}
             </div>
