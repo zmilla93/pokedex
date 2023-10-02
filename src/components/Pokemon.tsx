@@ -4,6 +4,11 @@ import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
 import { PokemonMoveTables } from "./pokemon/Moves";
 import { TypeView } from "./pokemon/TypeView";
 import { isValidPokemon } from "../PokeAPI/Utility";
+import { useEffect, useState } from "react";
+import { preloadImage } from "../utility/util";
+
+const starEmpty = require("../../public/icons/star-outline.svg");
+const starFull = require("../../public/icons/star-full-outline.svg");
 
 export function PokemonView() {
     let { pokemonName } = useParams();
@@ -14,14 +19,15 @@ export function PokemonView() {
     const { pokemon, species } = pokeData;
     const flavorText = formatFlavorText(species!.flavor_text_entries[0].flavor_text);
     const imgSrc = pokemon!.sprites.other["official-artwork"].front_default;
+    const imgShinySrc = pokemon!.sprites.other["official-artwork"].front_shiny;
     return (
-        <div key={pokemonName}>
+        <div>
             <div className="">{pokemonName} | #{pokemon!.id}</div>
             <div className="">#{pokemon!.order}</div>
             <div className="bg-blue-300 flex max-w-7xl">
                 {/* Left Column */}
                 <div className="flex w-1/2 bg-orange-400 justify-center">
-                    <Image src={imgSrc} />
+                    <Image src={imgSrc} srcShiny={imgShinySrc} />
                 </div>
                 {/* Right Column */}
                 <div className="w-1/2 p-5">
@@ -30,8 +36,6 @@ export function PokemonView() {
                         {flavorText}
                     </div>
                 </div>
-
-                {/* Move Table */}
             </div>
             <PokemonMoveTables pokemonName={pokemonName} />
         </div>
@@ -66,10 +70,26 @@ function StatTable({ pokemon, species }: { pokemon: Pokemon, species: PokemonSpe
     );
 }
 
-function Image({ src }: { src: string }) {
+function Image({ src, srcShiny }: { src: string, srcShiny: string }) {
+    const [shiny, setShiny] = useState(false);
+    const starSrc = shiny ? starFull : starEmpty;
+    const imgSrc = shiny ? srcShiny : src;
+
+    useEffect(() => {
+        preloadImage(src);
+        preloadImage(srcShiny);
+        setShiny(false);
+    }, [src, srcShiny]);
+
+    function handleShinyClick() {
+        const nextShiny = !shiny;
+        setShiny(nextShiny);
+    }
+
     return (
-        <div className="max-w-xs bg-slate-200 border-2 border-slate-400 rounded-xl p-5 flex items-center">
-            <img src={src} />
+        <div className="relative max-w-xs bg-slate-200 border-2 border-slate-400 rounded-xl p-5 flex items-center">
+            <img src={imgSrc} />
+            <img className="absolute right-1 bottom-1 cursor-pointer" src={starSrc} onClick={handleShinyClick} />
         </div>
     );
 }
