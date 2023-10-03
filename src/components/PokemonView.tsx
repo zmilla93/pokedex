@@ -1,12 +1,15 @@
+// React
 import { useParams } from "react-router-dom";
-import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
-import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
-import { PokemonMoveTables } from "./pokemon/Moves";
+import { useState } from "react";
+// View
 import { TypeView } from "./pokemon/TypeView";
+import { PokemonMoveTables } from "./pokemon/Moves";
+import { Column, TwoColumnView } from "./TwoColumnView";
+// Pokemon
+import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
+import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
 import { isValidPokemon } from "../PokeAPI/Utility";
-import { useEffect, useState } from "react";
-import { preloadImage } from "../utility/util";
-
+// Icons
 const starEmpty = require("Icons/star-outline.svg");
 const starFull = require("Icons/star-full-outline.svg");
 
@@ -24,19 +27,17 @@ export function PokemonView() {
         <div>
             <div className="">{pokemonName} | #{pokemon!.id}</div>
             <div className="">#{pokemon!.order}</div>
-            <div className="bg-blue-300 flex max-w-7xl">
-                {/* Left Column */}
-                <div className="flex w-1/2 bg-orange-400 justify-center">
+            <TwoColumnView>
+                <Column center>
                     <PokemonImage src={imgSrc} srcShiny={imgShinySrc} />
-                </div>
-                {/* Right Column */}
-                <div className="w-1/2 p-5">
+                </Column>
+                <Column className="p-5 h-full bg-blue-400">
                     <StatTable pokemon={pokemon!} species={species!} />
                     <div className="mt-5">
                         {flavorText}
                     </div>
-                </div>
-            </div>
+                </Column>
+            </TwoColumnView>
             <PokemonMoveTables pokemonName={pokemonName} />
         </div>
     );

@@ -11,10 +11,10 @@ export function TwoColumnView({ children }: TwoColumnViewProps) {
     if (childrenArr.length != 2) throw new Error(errorMessage);
     return (
         <div className="bg-lime-600 flex flex-col lg:flex-row max-w-7xl">
-            <div className="w-full md:w-1/2">
+            <div className="w-full lg:w-1/2">
                 {childrenArr[0]}
             </div>
-            <div className="w-full md:w-1/2">
+            <div className="w-full lg:w-1/2">
                 {childrenArr[1]}
             </div>
         </div>
