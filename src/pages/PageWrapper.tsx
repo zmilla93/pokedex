@@ -1,5 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
 import { SearchBar } from "../components/SearchBox";
+import { GameSelector } from "../components/GameSelector";
 
 export function PageWrapper() {
     return (
@@ -15,6 +16,7 @@ export function PageWrapper() {
                 </div>
             </div>
             <SearchBar />
+            <GameSelector />
             <h1 className="text-red-500">Pokedex App</h1>
             <div className="bg-red-400 flex justify-center">
                 <Outlet />

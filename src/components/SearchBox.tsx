@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { pokemonNames } from '../utility/data';
 import Fuse from "fuse.js";
 
@@ -25,6 +25,7 @@ type searchTermIndexCallback = (index: number) => void;
 
 // FIXME : Pokemon names should be formatted for display in search results
 export function SearchBar() {
+    const location = useLocation();
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
     const textInputRef = useRef(null);
@@ -96,7 +97,7 @@ export function SearchBar() {
             const textInput = textInputRef.current as HTMLDivElement;
             textInput.blur();
         }
-        navigate("/pokemon/" + nextSearchTerm);
+        navigate("/pokemon/" + nextSearchTerm + location.search);
         setSearchTerm("");
         setSelectedIndex(-1);
         setSearchResults([]);

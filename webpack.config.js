@@ -81,6 +81,7 @@ const config = {
     // https://webpack.js.org/configuration/resolve/
     resolve: {
         alias: {
+            Data: path.resolve(__dirname, 'data/'),
             Icons: path.resolve(__dirname, 'public/icons/'),
         },
         extensions: ['.tsx', '.ts', '.jsx', '.js', '...'],
