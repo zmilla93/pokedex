@@ -1,5 +1,5 @@
 import { Route, RouterProvider, createBrowserRouter, createHashRouter, createRoutesFromElements } from "react-router-dom";
-import { PokemonView } from "./components/Pokemon";
+import { PokemonView } from "./components/PokemonView";
 import { PageWrapper } from "./pages/PageWrapper";
 import { DebugView } from "./pages/Debug";
 
