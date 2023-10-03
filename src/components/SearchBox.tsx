@@ -122,7 +122,7 @@ export function SearchBar() {
             <span className="relative">
 
                 <input type="text" ref={textInputRef}
-                    className="border border-black rounded focus:outline-none relative"
+                    className="border border-black rounded focus:outline-none relative px-1"
                     value={searchTerm}
                     placeholder="Search..."
                     onChange={handleChange}
@@ -131,12 +131,18 @@ export function SearchBar() {
                     onKeyDown={handleKey}
                 />
 
-                <button className="border border-green-600 rounded bg-green-300 hover:bg-green-400 px-4 ml-1" onClick={() => submitSearch()}>Search</button>
-                <div ref={searchTermsRef} className="border border-black w-fit min-w-full p-1 rounded-sm absolute mt-[1px] bg-white hidden">
+                <button
+                    className="border border-green-600 rounded bg-green-300 hover:bg-green-400 px-4 ml-1"
+                    onClick={() => submitSearch()}
+                >
+                    Search
+                </button>
+                <div ref={searchTermsRef}
+                    className="border border-black w-fit min-w-full p-1 rounded-sm absolute mt-[1px] bg-white hidden"
+                >
                     {resultElements}
                 </div>
             </span>
-            <input type="text"></input>
         </>
     );
 }
