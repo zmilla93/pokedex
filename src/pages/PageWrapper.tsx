@@ -18,9 +18,12 @@ export function PageWrapper() {
             <SearchBar />
             <GameSelector />
             <h1 className="text-red-500">Pokedex App</h1>
-            <div className="bg-red-400 flex justify-center">
-                <Outlet />
+            <div className="flex justify-center bg-slate-400">
+                <div className="bg-red-400 flex justify-center max-w-7xl">
+                    <Outlet />
+                </div>
             </div>
+
         </>
     );
 }
