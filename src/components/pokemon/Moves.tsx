@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { CombinedMove, MoveList, useMoves } from '../../hooks/useMoves';
+import { CombinedMove, MoveList, usePokemonMoves } from '../../hooks/usePokemonMoves';
 import { cleanString } from '../../PokeAPI/Utility';
 import { TypeView } from "./TypeView";
 import { PokemonMoveVersion } from '../../PokeAPI/types/Pokemon';
@@ -8,7 +8,7 @@ import { Column, TwoColumnView } from "../TwoColumnView";
 export type MoveTableType = "Level Up" | "TM" | "HM" | "Egg";
 
 export function PokemonMoveTables({ pokemonName }: { pokemonName: string, moveTableType?: MoveTableType }) {
-    const moveList = useMoves(pokemonName, "omega-ruby-alpha-sapphire");
+    const moveList = usePokemonMoves(pokemonName, "omega-ruby-alpha-sapphire");
     if (moveList === undefined) return;
 
     const learnTable = <PokemonMoveTable key="Level Up" moveList={moveList} moveTableType="Level Up" />;

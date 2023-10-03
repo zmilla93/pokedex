@@ -20,7 +20,7 @@ export interface MoveList {
     eggMoves: CombinedMove[];
 }
 
-export function useMoves(pokemonName: string, filter: VersionGroupValue) {
+export function usePokemonMoves(pokemonName: string, filter: VersionGroupValue) {
     const validName = isValidPokemon(pokemonName);
     const [moveList, setMoveList] = useState<MoveList>();
     useEffect(() => {
