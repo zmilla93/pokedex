@@ -11,7 +11,8 @@ export function GameSelector() {
     if (currentGame === null) currentGame = undefined;
 
     function handleChange(e: ChangeEvent<HTMLSelectElement>) {
-        navigate(location.pathname + "?game=" + e.target.value);
+        searchParams.set("game", e.target.value);
+        navigate(location.pathname + "?" + searchParams.toString());
     }
 
     const options = gameVersions.map(v => {
