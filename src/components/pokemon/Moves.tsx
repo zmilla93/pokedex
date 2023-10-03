@@ -3,19 +3,30 @@ import { CombinedMove, MoveList, useMoves } from '../../hooks/useMoves';
 import { cleanString } from '../../PokeAPI/Utility';
 import { TypeView } from "./TypeView";
 import { PokemonMoveVersion } from '../../PokeAPI/types/Pokemon';
+import { Column, TwoColumnView } from "../TwoColumnView";
 
 export type MoveTableType = "Level Up" | "TM" | "HM" | "Egg";
 
 export function PokemonMoveTables({ pokemonName }: { pokemonName: string, moveTableType?: MoveTableType }) {
     const moveList = useMoves(pokemonName, "omega-ruby-alpha-sapphire");
     if (moveList === undefined) return;
+
+    const learnTable = <PokemonMoveTable key="Level Up" moveList={moveList} moveTableType="Level Up" />;
+    const eggTable = <PokemonMoveTable key="Egg" moveList={moveList} moveTableType="Egg" />;
+    const tmTable = <PokemonMoveTable key="TM" moveList={moveList} moveTableType="TM" />;
+    const hmTable = <PokemonMoveTable key="HM" moveList={moveList} moveTableType="HM" />;
+
     return (
-        <>
-            <PokemonMoveTable moveList={moveList} moveTableType="Level Up" />
-            <PokemonMoveTable moveList={moveList} moveTableType="TM" />
-            <PokemonMoveTable moveList={moveList} moveTableType="HM" />
-            <PokemonMoveTable moveList={moveList} moveTableType="Egg" />
-        </>
+        <TwoColumnView>
+            <Column>
+                {learnTable}
+                {eggTable}
+            </Column>
+            <Column>
+                {tmTable}
+                {hmTable}
+            </Column>
+        </TwoColumnView>
     );
 }
 
