@@ -37,7 +37,7 @@ function getMoveElement(entry: CombinedMove, moveTableType: MoveTableType, searc
     const levelLearned = version.level_learned_at;
     const element = (
         <tr key={move.name + levelLearned}>
-            <td className={rowClass}><Link to={`/move/${move.name}?${searchParams.toString()}`} preventScrollReset={false}>{cleanString(move.name)}</Link>{ }</td>
+            <td className={rowClass}><Link to={`/move/${move.name}?${searchParams.toString()}`}>{cleanString(move.name)}</Link>{ }</td>
             <td className={rowClass}>{<TypeView types={[move.type.name]} />}</td>
             <td className={rowClass}>{move.power ? move.power : "-"}</td>
             <td className={rowClass}>{move.accuracy ? move.accuracy : "-"}</td>
