@@ -1,10 +1,12 @@
 import { Link, Outlet } from "react-router-dom";
 import { SearchBar } from "../components/SearchBox";
 import { GameSelector } from "../components/GameSelector";
+import { ScrollToTop } from "../components/ScrollToTop";
 
 export function PageWrapper() {
     return (
         <>
+            <ScrollToTop />
             <Link to="test">Test</Link>
             <div>
                 <h3>Test Pokemon</h3>

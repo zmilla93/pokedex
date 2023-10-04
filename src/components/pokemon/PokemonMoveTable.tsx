@@ -4,6 +4,7 @@ import { cleanString } from '../../PokeAPI/Utility';
 import { TypeView } from "./TypeView";
 import { PokemonMoveVersion } from '../../PokeAPI/types/Pokemon';
 import { Column, TwoColumnView } from "../TwoColumnView";
+import { Link, useSearchParams } from 'react-router-dom';
 
 export type MoveTableType = "Level Up" | "TM" | "HM" | "Egg";
 
@@ -30,13 +31,13 @@ export function PokemonMoveTables({ pokemonName }: { pokemonName: string, moveTa
     );
 }
 
-function getMoveElement(entry: CombinedMove, moveTableType: MoveTableType, version: PokemonMoveVersion = entry.pokemonMove.version_group_details[0]) {
+function getMoveElement(entry: CombinedMove, moveTableType: MoveTableType, searchParams: URLSearchParams, version: PokemonMoveVersion = entry.pokemonMove.version_group_details[0]) {
     const rowClass = "pr-6";
     const move = entry.move;
     const levelLearned = version.level_learned_at;
     const element = (
         <tr key={move.name + levelLearned}>
-            <td className={rowClass}>{cleanString(move.name)}</td>
+            <td className={rowClass}><Link to={`/move/${move.name}?${searchParams.toString()}`} preventScrollReset={false}>{cleanString(move.name)}</Link>{ }</td>
             <td className={rowClass}>{<TypeView types={[move.type.name]} />}</td>
             <td className={rowClass}>{move.power ? move.power : "-"}</td>
             <td className={rowClass}>{move.accuracy ? move.accuracy : "-"}</td>
@@ -48,6 +49,7 @@ function getMoveElement(entry: CombinedMove, moveTableType: MoveTableType, versi
 
 function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, moveTableType: MoveTableType }) {
     const targetMoveList = getTargetMoveTable(moveList, moveTableType);
+    const [searchParams] = useSearchParams();
     // FIXME : Show a message that no moves are present?
     // If the target move list has no entries, don't render anything
     // if (targetMoveList.length == 0) return;
@@ -62,9 +64,9 @@ function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, mov
         if (moveTableType == "Level Up") {
             entry.pokemonMove.version_group_details.forEach(version => {
                 if (version.move_learn_method.name !== "level-up") return;
-                moveListElements.push(getMoveElement(entry, moveTableType, version));
+                moveListElements.push(getMoveElement(entry, moveTableType, searchParams, version));
             });
-        } else moveListElements.push(getMoveElement(entry, moveTableType));
+        } else moveListElements.push(getMoveElement(entry, moveTableType, searchParams));
     });
     // moveListElements.sort(sortByLevel);
     moveListElements.sort(sortByName);

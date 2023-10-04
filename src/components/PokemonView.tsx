@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 // View
 import { TypeView } from "./pokemon/TypeView";
-import { PokemonMoveTables } from "./pokemon/Moves";
+import { PokemonMoveTables } from "./pokemon/PokemonMoveTable";
 import { Column, TwoColumnView } from "./TwoColumnView";
 // Pokemon
 import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
