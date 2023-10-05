@@ -1,19 +1,19 @@
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import assert from '../utility/assert';
 import { useMove } from '../hooks/useMove';
 import { Move } from '../PokeAPI/types/Moves';
 import { TypeView } from '../components/pokemon/TypeView';
 import { ReactNode } from 'react';
-import { DEFAULT_GAME } from '../utility/defaults';
 import { Column, TwoColumnView } from '../components/TwoColumnView';
 import { VersionGroupValue } from '../PokeAPI/types/Custom';
+import { useGameVersion } from '../hooks/useGameVersion';
 
 export function MovePage() {
     const params = useParams();
     const moveName = params.moveName;
     const location = useLocation();
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
+    const gameVersion = useGameVersion();
 
     assert(() => moveName !== undefined, "Move is undefined!");
     const moveDataUnchecked = useMove(moveName!);
@@ -27,7 +27,7 @@ export function MovePage() {
     }
     if (moveDataUnchecked === null) return (<div>NULL MOVE</div>);
     const moveData = moveDataUnchecked as Move;
-    const game: VersionGroupValue = searchParams.get("game") !== null ? searchParams.get("game") as VersionGroupValue : DEFAULT_GAME;
+
 
     function handlePokemonClick(pokemonName: string) {
         navigate(`/pokemon/${pokemonName}${location.search}`);
@@ -63,7 +63,7 @@ export function MovePage() {
                 <Column>
                     Description:
                     <div>
-                        {getMoveDescription(moveData, game)}
+                        {getMoveDescription(moveData, gameVersion)}
                     </div>
                 </Column>
             </TwoColumnView>

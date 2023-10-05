@@ -5,17 +5,14 @@ import { TypeView } from "./TypeView";
 import { PokemonMoveVersion } from '../../PokeAPI/types/Pokemon';
 import { Column, TwoColumnView } from "../TwoColumnView";
 import { Link, useSearchParams } from 'react-router-dom';
-import { DEFAULT_GAME } from '../../utility/defaults';
-import { VersionGroupValue } from "../../PokeAPI/types/Custom";
+import { useGameVersion } from "../../hooks/useGameVersion";
 
 export type MoveTableType = "Level Up" | "TM" | "HM" | "Egg";
 
 export function PokemonMoveTables({ pokemonName }: { pokemonName: string, moveTableType?: MoveTableType }) {
-    const [searchParams] = useSearchParams();
-    const game = searchParams.get("game") as VersionGroupValue || DEFAULT_GAME;
-    const moveList = usePokemonMoves(pokemonName, game);
+    const gameVersion = useGameVersion();
+    const moveList = usePokemonMoves(pokemonName, gameVersion);
     if (moveList === undefined) return;
-
     const learnTable = <PokemonMoveTable key="Level Up" moveList={moveList} moveTableType="Level Up" />;
     const eggTable = <PokemonMoveTable key="Egg" moveList={moveList} moveTableType="Egg" />;
     const tmTable = <PokemonMoveTable key="TM" moveList={moveList} moveTableType="TM" />;
@@ -54,7 +51,7 @@ function getMoveElement(entry: CombinedMove, moveTableType: MoveTableType, searc
 function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, moveTableType: MoveTableType }) {
     const targetMoveList = getTargetMoveTable(moveList, moveTableType);
     const [searchParams] = useSearchParams();
-    const game = searchParams.get("game") || DEFAULT_GAME;
+    const game = useGameVersion();
     // FIXME : Show a message that no moves are present?
     // If the target move list has no entries, don't render anything
     // if (targetMoveList.length == 0) return;
