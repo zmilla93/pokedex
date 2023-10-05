@@ -28,7 +28,6 @@ export function usePokemonMoves(pokemonName: string, filter: VersionGroupValue) 
 
     // Fetch move data
     useEffect(() => {
-        console.log("fetching all move data");
         if (!validName) {
             setMoveList(undefined);
             return;
@@ -42,7 +41,6 @@ export function usePokemonMoves(pokemonName: string, filter: VersionGroupValue) 
 
     // Fetch machine data
     useEffect(() => {
-        console.log("fetching machine data");
         (async () => {
             const nextMachines = await fetchMachineData(pokemonMoves, moves, filter);
             setMachines(nextMachines);
@@ -51,7 +49,6 @@ export function usePokemonMoves(pokemonName: string, filter: VersionGroupValue) 
 
     // Filter move data into different categories based on target game
     useEffect(() => {
-        console.log("filtering move data: " + filter);
         const combinedMoves = filterData(pokemonMoves, moves, machines, filter);
         setMoveList(combinedMoves);
     }, [pokemonMoves, moves, machines, filter]);
