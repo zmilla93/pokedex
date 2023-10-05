@@ -6,6 +6,7 @@ import { TypeView } from '../components/pokemon/TypeView';
 import { ReactNode } from 'react';
 import { DEFAULT_GAME } from '../utility/defaults';
 import { Column, TwoColumnView } from '../components/TwoColumnView';
+import { VersionGroupValue } from '../PokeAPI/types/Custom';
 
 export function MovePage() {
     const params = useParams();
@@ -26,7 +27,7 @@ export function MovePage() {
     }
     if (moveDataUnchecked === null) return (<div>NULL MOVE</div>);
     const moveData = moveDataUnchecked as Move;
-    const game = searchParams.get("game") !== null ? searchParams.get("game") : DEFAULT_GAME;
+    const game: VersionGroupValue = searchParams.get("game") !== null ? searchParams.get("game") as VersionGroupValue : DEFAULT_GAME;
 
     function handlePokemonClick(pokemonName: string) {
         navigate(`/pokemon/${pokemonName}${location.search}`);
@@ -41,11 +42,6 @@ export function MovePage() {
             </div>
         );
     });
-    let descriptionEntry = moveData.flavor_text_entries.find(entry => {
-        return entry.version_group.name === game && entry.language.name === "en";
-    });
-    if (descriptionEntry === undefined) descriptionEntry = moveData.flavor_text_entries[0];
-    const description = descriptionEntry.flavor_text;
     return (
         <div>
             <TwoColumnView>
@@ -67,7 +63,7 @@ export function MovePage() {
                 <Column>
                     Description:
                     <div>
-                        {description}
+                        {getMoveDescription(moveData, game)}
                     </div>
                 </Column>
             </TwoColumnView>
@@ -82,6 +78,13 @@ export function MovePage() {
             </div>
         </div>
     );
+}
+
+function getMoveDescription(moveData: Move, game: VersionGroupValue) {
+    let descriptionEntry = moveData.flavor_text_entries.find(entry => entry.version_group.name === game && entry.language.name === "en");
+    if (descriptionEntry === undefined) descriptionEntry = moveData.flavor_text_entries.find(entry => entry.language.name === "en");
+    if (descriptionEntry === undefined) descriptionEntry = moveData.flavor_text_entries[0];
+    return descriptionEntry.flavor_text;
 }
 
 function MoveTableRow({ title, data }: { title: string, data: ReactNode }) {

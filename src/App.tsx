@@ -2,7 +2,7 @@ import { Route, RouterProvider, createBrowserRouter, createHashRouter, createRou
 import { PokemonView } from "./components/PokemonView";
 import { PageWrapper } from "./pages/PageWrapper";
 import { DebugView } from "./pages/Debug";
-import { MovePage } from "./pages/Move";
+import { MovePage } from "./pages/MovePage";
 
 // Hash browser needs to be used when hosting on github pages
 // due to not having access to server side routing features.
