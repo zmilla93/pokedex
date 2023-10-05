@@ -5,11 +5,15 @@ import { TypeView } from "./TypeView";
 import { PokemonMoveVersion } from '../../PokeAPI/types/Pokemon';
 import { Column, TwoColumnView } from "../TwoColumnView";
 import { Link, useSearchParams } from 'react-router-dom';
+import { DEFAULT_GAME } from '../../utility/defaults';
+import { VersionGroupValue } from "../../PokeAPI/types/Custom";
 
 export type MoveTableType = "Level Up" | "TM" | "HM" | "Egg";
 
 export function PokemonMoveTables({ pokemonName }: { pokemonName: string, moveTableType?: MoveTableType }) {
-    const moveList = usePokemonMoves(pokemonName, "omega-ruby-alpha-sapphire");
+    const [searchParams] = useSearchParams();
+    const game = searchParams.get("game") as VersionGroupValue || DEFAULT_GAME;
+    const moveList = usePokemonMoves(pokemonName, game);
     if (moveList === undefined) return;
 
     const learnTable = <PokemonMoveTable key="Level Up" moveList={moveList} moveTableType="Level Up" />;
@@ -50,11 +54,14 @@ function getMoveElement(entry: CombinedMove, moveTableType: MoveTableType, searc
 function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, moveTableType: MoveTableType }) {
     const targetMoveList = getTargetMoveTable(moveList, moveTableType);
     const [searchParams] = useSearchParams();
+    const game = searchParams.get("game") || DEFAULT_GAME;
     // FIXME : Show a message that no moves are present?
     // If the target move list has no entries, don't render anything
     // if (targetMoveList.length == 0) return;
     const moveListElements: MoveElement[] = [];
     targetMoveList.forEach(entry => {
+        // const valid = entry.pokemonMove.version_group_details.find(version => version.version_group.name === game);
+        // if (valid === undefined) return;
         const move = entry.move;
         const pokemonMove = entry.pokemonMove;
         // const levelLearned = pokemonMove.version_group_details[0].level_learned_at;
@@ -64,6 +71,7 @@ function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, mov
         if (moveTableType == "Level Up") {
             entry.pokemonMove.version_group_details.forEach(version => {
                 if (version.move_learn_method.name !== "level-up") return;
+                if (version.version_group.name !== game) return;
                 moveListElements.push(getMoveElement(entry, moveTableType, searchParams, version));
             });
         } else moveListElements.push(getMoveElement(entry, moveTableType, searchParams));
