@@ -28,40 +28,54 @@ export function usePokemonMoves(pokemonName: string, filter: VersionGroupValue) 
 
     // Fetch move data
     useEffect(() => {
+        console.log("fetching all move data");
         if (!validName) {
             setMoveList(undefined);
             return;
         }
         (async () => {
-            const [nextPokemonMoves, nextMoves, nextMachines] = await fetchData(pokemonName);
+            const [nextPokemonMoves, nextMoves] = await fetchData(pokemonName);
             setPokemonMoves(nextPokemonMoves);
             setMoves(nextMoves);
-            setMachines(nextMachines);
         })();
     }, [pokemonName, validName]);
 
+    // Fetch machine data
+    useEffect(() => {
+        console.log("fetching machine data");
+        (async () => {
+            const nextMachines = await fetchMachineData(pokemonMoves, moves, filter);
+            setMachines(nextMachines);
+        })();
+    }, [pokemonMoves, moves, filter]);
+
     // Filter move data into different categories based on target game
     useEffect(() => {
+        console.log("filtering move data: " + filter);
         const combinedMoves = filterData(pokemonMoves, moves, machines, filter);
         setMoveList(combinedMoves);
     }, [pokemonMoves, moves, machines, filter]);
     return moveList;
 }
 
-async function fetchData(pokemonName: string): Promise<[PokemonMove[], Move[], Machine[]]> {
+async function fetchData(pokemonName: string): Promise<[PokemonMove[], Move[]]> {
     // Get pokemon data, which contains a list of learnable moves
     const pokemon = await api.getPokemon(pokemonName);
     // Get detailed data for each move
     const moveRequests = pokemon.moves.map(entry => api.getMove(entry.move.name));
     const moveResponses = await Promise.all(moveRequests);
-    // Get data about every unique machine
+    return [pokemon.moves, moveResponses];
+}
+
+async function fetchMachineData(pokemonMoves: PokemonMove[], moves: Move[], gameVersion: VersionGroupValue) {
     const machineRequests: Promise<Machine>[] = [];
     const machineIds: number[] = [];
-    for (let i = 0; i < pokemon.moves.length; i++) {
-        const pokemonMove = pokemon.moves[i];
-        const move = moveResponses[i];
+    for (let i = 0; i < pokemonMoves.length; i++) {
+        const pokemonMove = pokemonMoves[i];
+        const move = moves[i];
         if (!isMoveLearnableByMachine(pokemonMove)) continue;
         move.machines.forEach(machine => {
+            if (machine.version_group.name !== gameVersion) return;
             const machineUrl = machine.machine.url as string;
             const machineId = getMachineIdFromURL(machineUrl);
             if (machineIds.includes(machineId)) return;
@@ -69,8 +83,9 @@ async function fetchData(pokemonName: string): Promise<[PokemonMove[], Move[], M
             machineRequests.push(api.getMachine(machineId));
         });
     }
+    // console.log(`Requested data for ${machineIds.length} machines.`);
     const machineResponses = await Promise.all(machineRequests);
-    return [pokemon.moves, moveResponses, machineResponses];
+    return machineResponses;
 }
 
 function filterData(pokemonMoves: PokemonMove[], moves: Move[], machines: Machine[], filter: VersionGroupValue): MoveList {
@@ -95,10 +110,10 @@ function filterData(pokemonMoves: PokemonMove[], moves: Move[], machines: Machin
             else if (learnMethod === "egg") nextEggMoves.push(combinedMove);
             else if (learnMethod === "machine") {
                 const machineVersion = moves[i].machines.find(machine => machine.version_group.name === filter);
-                if (machineVersion === undefined) return;
+                if (machineVersion === undefined || machineVersion === null) return;
                 const machineId = getMachineIdFromURL(machineVersion.machine.url as string);
                 const machine = machines.find(machine => machine.id === machineId);
-                if (machine === undefined) return;
+                if (machine === undefined || machine === null) return;
                 combinedMove.machine = machine;
                 if (machine.item.name.startsWith("tm")) nextTmMoves.push(combinedMove);
                 else if (machine.item.name.startsWith("hm")) nextHmMoves.push(combinedMove);
