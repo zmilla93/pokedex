@@ -1,32 +1,19 @@
-import { Link, Outlet } from "react-router-dom";
-import { SearchBar } from "../components/SearchBox";
-import { GameSelector } from "../components/GameSelector";
+import { Outlet } from "react-router-dom";
 import { ScrollToTop } from "../components/ScrollToTop";
+import { Navbar } from "../components/Navbar";
 
 export function PageWrapper() {
     return (
-        <>
+        <div id="pageWrapper" className="flex flex-col h-full">
             <ScrollToTop />
-            <Link to="test">Test</Link>
-            <div>
-                <h3>Test Pokemon</h3>
-                <div>
-                    <Link to="pokemon/bulbasaur">Bulbasaur</Link>
-                    <Link to="pokemon/mew">Mew</Link>
-                    <Link to="pokemon/zapdos">Zapdos</Link>
-                    <Link to="pokemon/fake">Fake</Link>
-                </div>
+            <div id="header" className="flex flex-grow-0 flex-shrink bg-red-700">
+                <Navbar />
             </div>
-            <SearchBar />
-            <GameSelector />
-            <h1 className="text-red-500">Pokedex App</h1>
-            <div className="flex justify-center bg-slate-400">
-                <div className="bg-red-400 flex justify-center max-w-7xl">
-                    <Outlet />
-                </div>
+            <div id="pageContent"
+                className="flex flex-col flex-grow flex-shrink bg-blue-700 overflow-auto items-center">
+                <Outlet />
             </div>
-
-        </>
+        </div>
     );
 }
 
