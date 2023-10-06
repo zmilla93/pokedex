@@ -12,7 +12,7 @@ export function GameSelector() {
 
     function handleChange(e: ChangeEvent<HTMLSelectElement>) {
         searchParams.set("game", e.target.value);
-        navigate(location.pathname + "?" + searchParams.toString());
+        navigate(location.pathname + "?" + searchParams.toString(), { replace: true });
     }
 
     const options = gameVersions.map(v => {
