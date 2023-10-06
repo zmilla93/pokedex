@@ -9,6 +9,7 @@ import { Column, TwoColumnView } from "./TwoColumnView";
 import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
 import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
 import { isValidPokemon } from "../PokeAPI/Utility";
+import { Loader } from "./Loader";
 // Icons
 const starEmpty = require("Icons/star-outline.svg");
 const starFull = require("Icons/star-full-outline.svg");
@@ -18,7 +19,7 @@ export function PokemonView() {
     if (pokemonName === undefined) pokemonName = "";
     const pokeData = usePokemon(pokemonName);
     if (!isValidPokemon(pokemonName)) return (<div>Invalid pokemon!</div>);
-    if (!validatePokemonData(pokeData)) return (<div>Loading...</div>);
+    if (!validatePokemonData(pokeData)) return (<Loader />);
     const { pokemon, species } = pokeData;
     const flavorText = formatFlavorText(species!.flavor_text_entries[0].flavor_text);
     const imgSrc = pokemon!.sprites.other["official-artwork"].front_default;

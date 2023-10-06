@@ -3,6 +3,7 @@ import { PokemonView } from "./components/PokemonView";
 import { PageWrapper } from "./pages/PageWrapper";
 import { DebugView } from "./pages/Debug";
 import { MovePage } from "./pages/MovePage";
+import '../src/css/loaders.css';
 
 // Hash browser needs to be used when hosting on github pages
 // due to not having access to server side routing features.
