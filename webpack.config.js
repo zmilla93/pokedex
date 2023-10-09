@@ -40,7 +40,6 @@ const config = {
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: staticInputFolder + '/index.html',
-            favicon: staticInputFolder + '/favicon.png',
             // publicPath: '/',
             hash: false,
         }),
