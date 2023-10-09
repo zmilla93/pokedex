@@ -7,6 +7,8 @@ import { Loader } from "./Loader";
 import { Column, TwoColumnView } from "./TwoColumnView";
 import { PokemonMoveTables } from "./pokemon/PokemonMoveTable";
 import { TypeView } from "./pokemon/TypeView";
+import { VersionGroupValue } from "../PokeAPI/types/Custom";
+import { useGameVersion } from "../hooks/useGameVersion";
 
 const starEmpty = require("Icons/star-outline.svg");
 const starFull = require("Icons/star-full-outline.svg");
@@ -15,11 +17,11 @@ export function PokemonView() {
     let { pokemonName } = useParams();
     if (pokemonName === undefined) pokemonName = "";
     const pokeData = usePokemon(pokemonName);
+    const gameVersion = useGameVersion();
     if (!isValidPokemon(pokemonName)) return (<div>Invalid pokemon!</div>);
     if (!validatePokemonData(pokeData)) return (<Loader />);
     const { pokemon, species } = pokeData;
-    // FIXME : Get version text from selected game
-    const flavorText = formatFlavorText(species!.flavor_text_entries[0].flavor_text);
+    const flavorText = getFlavorText(species!, gameVersion);
     const imgSrc = pokemon!.sprites.other["official-artwork"].front_default;
     const imgShinySrc = pokemon!.sprites.other["official-artwork"].front_shiny;
     return (
@@ -99,7 +101,16 @@ function ShinyButton({ src, className, onClick }: { src: string, className: stri
 
 // FIXME : Make this more robust and move to utility
 function formatFlavorText(text: string) {
-    return text.replace("\f", " ");
+    text = text.replace("\f", " ")
+        .replace("", " ");
+    return text;
+}
+
+function getFlavorText(species: PokemonSpecies, gameVersion: VersionGroupValue) {
+    let flavorText = species.flavor_text_entries.find(entry => entry.version.name === gameVersion && entry.language.name == "en");
+    if (flavorText === undefined) flavorText = species.flavor_text_entries.find(entry => entry.language.name === "en");
+    if (flavorText === undefined) flavorText = species.flavor_text_entries[0];
+    return formatFlavorText(flavorText.flavor_text);
 }
 
 function formatHeight(height: number): string {
