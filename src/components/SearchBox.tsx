@@ -120,7 +120,7 @@ export function SearchBar() {
 
     return (
         <>
-            <span className="relative">
+            <span className="relative ml-2">
 
                 <input type="text" ref={textInputRef}
                     className="border border-black rounded focus:outline-none relative px-1"
@@ -133,7 +133,7 @@ export function SearchBar() {
                 />
 
                 <button
-                    className="border border-green-600 rounded bg-green-300 hover:bg-green-400 px-4 ml-1"
+                    className="border border-green-600 rounded bg-green-300 hover:bg-green-400 px-4 ml-2"
                     onClick={() => submitSearch()}
                 >
                     Search

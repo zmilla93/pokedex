@@ -21,11 +21,11 @@ export function PokemonMoveTables({ pokemonName }: { pokemonName: string, moveTa
 
     return (
         <TwoColumnView>
-            <Column>
+            <Column center>
                 {learnTable}
                 {eggTable}
             </Column>
-            <Column>
+            <Column center>
                 {tmTable}
                 {hmTable}
             </Column>

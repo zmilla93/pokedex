@@ -18,19 +18,23 @@ export function PokemonView() {
     if (!isValidPokemon(pokemonName)) return (<div>Invalid pokemon!</div>);
     if (!validatePokemonData(pokeData)) return (<Loader />);
     const { pokemon, species } = pokeData;
+    // FIXME : Get version text from selected game
     const flavorText = formatFlavorText(species!.flavor_text_entries[0].flavor_text);
     const imgSrc = pokemon!.sprites.other["official-artwork"].front_default;
     const imgShinySrc = pokemon!.sprites.other["official-artwork"].front_shiny;
     return (
         <div>
-            <div className="border-2 border-gray-400 rounded p-4 my-4 text-2xl text-gray-400 text-center">
-                {pokemonName} | #{pokemon!.id}
+            <div className="px-5">
+                <div className="border-2 border-gray-400 rounded p-4 my-4 text-2xl text-gray-400 text-center">
+                    {pokemonName} | #{pokemon!.id}
+                </div>
             </div>
-            <TwoColumnView>
+
+            <TwoColumnView className="bg-red-400 box-border p-5">
                 <Column center>
                     <PokemonImage src={imgSrc} srcShiny={imgShinySrc} />
                 </Column>
-                <Column className="p-5 h-full bg-blue-400">
+                <Column className="p-5 h-full border border-gray-200 rounded">
                     <StatTable pokemon={pokemon!} species={species!} />
                     <div className="mt-5">
                         {flavorText}
