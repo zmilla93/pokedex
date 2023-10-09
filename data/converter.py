@@ -13,7 +13,14 @@ def passthrough(value):
     return value
 
 
-def processFile(inFileName, outFileName, func):
+def versionGroupMap(value):
+    versions = []
+    for version in value["versions"]:
+        versions.append(version["name"])
+    return {value["name"]: versions}
+
+
+def processFile(inFileName, outFileName, func, useResultKey=True):
     inFileName = inFileName + ".json"
     if outFileName == None:
         outFileName = inFileName
@@ -26,8 +33,9 @@ def processFile(inFileName, outFileName, func):
 
     # Convert data
     outData = []
-    # print(inData["results"])
-    for value in inData["results"]:
+    if (useResultKey):
+        inData = inData["results"]
+    for value in inData:
         outData.append(func(value))
 
     # Write Output
@@ -38,9 +46,12 @@ def processFile(inFileName, outFileName, func):
 
 # Process all files
 print("Processing data...")
+
 processFile("pokemon", None, nameConverter)
 processFile("version_groups", None, nameConverter)
 processFile("move_learn_method", None, nameConverter)
 processFile("types", None, nameConverter)
 processFile("versions", None, nameConverter)
+processFile("version_group_map", None, versionGroupMap, False)
+
 print("Processing complete!")

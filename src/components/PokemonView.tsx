@@ -101,6 +101,7 @@ function ShinyButton({ src, className, onClick }: { src: string, className: stri
 }
 
 function getFlavorText(species: PokemonSpecies, gameVersion: VersionGroupValue) {
+    // FIXME : This can return a false positive, IE 'yellow' includes 'y'. Need to add a versionGroup => version map
     let flavorText = species.flavor_text_entries.find(entry => gameVersion.includes(entry.version.name) && entry.language.name == "en");
     if (flavorText === undefined) flavorText = species.flavor_text_entries.find(entry => entry.language.name === "en");
     if (flavorText === undefined) flavorText = species.flavor_text_entries[0];
