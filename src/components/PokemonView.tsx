@@ -10,6 +10,7 @@ import { TypeView } from "./pokemon/TypeView";
 import { VersionGroupValue } from "../PokeAPI/types/Custom";
 import { useGameVersion } from "../hooks/useGameVersion";
 import { formatFlavorText } from "../utility/StringCleaning";
+import { gameVersionMap } from "../utility/data";
 
 const starEmpty = require("Icons/star-outline.svg");
 const starFull = require("Icons/star-full-outline.svg");
@@ -101,8 +102,8 @@ function ShinyButton({ src, className, onClick }: { src: string, className: stri
 }
 
 function getFlavorText(species: PokemonSpecies, gameVersion: VersionGroupValue) {
-    // FIXME : This can return a false positive, IE 'yellow' includes 'y'. Need to add a versionGroup => version map
-    let flavorText = species.flavor_text_entries.find(entry => gameVersion.includes(entry.version.name) && entry.language.name == "en");
+    const gameVersions = gameVersionMap[gameVersion];
+    let flavorText = species.flavor_text_entries.find(entry => gameVersions.includes(entry.version.name) && entry.language.name == "en");
     if (flavorText === undefined) flavorText = species.flavor_text_entries.find(entry => entry.language.name === "en");
     if (flavorText === undefined) flavorText = species.flavor_text_entries[0];
     return formatFlavorText(flavorText.flavor_text);
