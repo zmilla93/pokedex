@@ -1,16 +1,13 @@
-// React
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-// View
 import { TypeView } from "./pokemon/TypeView";
 import { PokemonMoveTables } from "./pokemon/PokemonMoveTable";
 import { Column, TwoColumnView } from "./TwoColumnView";
-// Pokemon
 import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
 import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
 import { isValidPokemon } from "../PokeAPI/Utility";
 import { Loader } from "./Loader";
-// Icons
+
 const starEmpty = require("Icons/star-outline.svg");
 const starFull = require("Icons/star-full-outline.svg");
 
@@ -26,8 +23,9 @@ export function PokemonView() {
     const imgShinySrc = pokemon!.sprites.other["official-artwork"].front_shiny;
     return (
         <div>
-            <div className="">{pokemonName} | #{pokemon!.id}</div>
-            <div className="">#{pokemon!.order}</div>
+            <div className="border-2 border-gray-400 rounded p-4 my-4 text-2xl text-gray-400 text-center">
+                {pokemonName} | #{pokemon!.id}
+            </div>
             <TwoColumnView>
                 <Column center>
                     <PokemonImage src={imgSrc} srcShiny={imgShinySrc} />
