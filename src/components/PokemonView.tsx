@@ -9,6 +9,7 @@ import { PokemonMoveTables } from "./pokemon/PokemonMoveTable";
 import { TypeView } from "./pokemon/TypeView";
 import { VersionGroupValue } from "../PokeAPI/types/Custom";
 import { useGameVersion } from "../hooks/useGameVersion";
+import { formatFlavorText } from "../utility/StringCleaning";
 
 const starEmpty = require("Icons/star-outline.svg");
 const starFull = require("Icons/star-full-outline.svg");
@@ -100,11 +101,7 @@ function ShinyButton({ src, className, onClick }: { src: string, className: stri
 }
 
 // FIXME : Make this more robust and move to utility
-function formatFlavorText(text: string) {
-    text = text.replace("\f", " ")
-        .replace("", " ");
-    return text;
-}
+
 
 function getFlavorText(species: PokemonSpecies, gameVersion: VersionGroupValue) {
     let flavorText = species.flavor_text_entries.find(entry => entry.version.name === gameVersion && entry.language.name == "en");
