@@ -1,11 +1,11 @@
-import { DebugSpriteViewer } from "../components/debug/DebugSpriteViewer";
-import { DebugTypeViewer } from "../components/debug/DebugTypeViewer";
+import { CenterWrapper } from "../components/CenterWrapper";
+import { Loader } from "../components/Loader";
 
 export function DebugView() {
     return (
-        <div>
-            <DebugTypeViewer />
-            {/* <DebugSpriteViewer pokeName="mew" /> */}
-        </div>
+        <CenterWrapper>
+            <span className="mr-2 text-white">Loading Debug...</span>
+            <Loader />
+        </CenterWrapper>
     );
 }
