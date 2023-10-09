@@ -2,14 +2,11 @@ import os
 import json
 import requests
 
-import urllib3
-
 rawDir = os.path.dirname(__file__) + "\\raw\\"
 cleanDir = os.path.dirname(__file__) + "\\clean\\"
 
 list = []
 baseUrl = "https://pokeapi.co/api/v2/version-group/"
-
 
 print("Fetching data...")
 for i in range(1, 28):
@@ -20,3 +17,4 @@ for i in range(1, 28):
 outFile = open(rawDir + "version_group_map.json", "w")
 outFile.write(json.dumps(list, indent=4))
 outFile.close()
+print("Success!")
