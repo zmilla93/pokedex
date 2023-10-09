@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import { CombinedMove, MoveList, usePokemonMoves } from '../../hooks/usePokemonMoves';
 import { cleanString } from '../../PokeAPI/Utility';
 import { TypeView } from "./TypeView";
@@ -51,17 +51,16 @@ function getMoveElement(entry: CombinedMove, moveTableType: MoveTableType, searc
 function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, moveTableType: MoveTableType }) {
     const targetMoveList = getTargetMoveTable(moveList, moveTableType);
     const [searchParams] = useSearchParams();
+    const [sortType, setSortType] = useState("Name");
+    const [reverseSort, setReverseSort] = useState(false);
     const game = useGameVersion();
     // FIXME : Show a message that no moves are present?
     // If the target move list has no entries, don't render anything
     // if (targetMoveList.length == 0) return;
     const moveListElements: MoveElement[] = [];
     targetMoveList.forEach(entry => {
-        // const valid = entry.pokemonMove.version_group_details.find(version => version.version_group.name === game);
-        // if (valid === undefined) return;
         const move = entry.move;
         const pokemonMove = entry.pokemonMove;
-        // const levelLearned = pokemonMove.version_group_details[0].level_learned_at;
         // FIXME : Remove debug checks?
         if (move.name != pokemonMove.move.name) throw new Error(`Move mismatch! ${move.name} : ${pokemonMove.move.name}`);
         if (pokemonMove.version_group_details.length < 1) console.error(`Version group details not length 1: ${move.name}`);
@@ -73,8 +72,15 @@ function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, mov
             });
         } else moveListElements.push(getMoveElement(entry, moveTableType, searchParams));
     });
-    // moveListElements.sort(sortByLevel);
-    moveListElements.sort(sortByName);
+    applySort(moveListElements, sortType);
+    if (reverseSort) moveListElements.reverse();
+
+    function adjustSort(e: React.MouseEvent<HTMLTableCellElement>) {
+        const nextSortType = (e.target as HTMLHeadElement).innerHTML;
+        setSortType(nextSortType);
+        if (sortType === nextSortType) setReverseSort(!reverseSort);
+        else setReverseSort(false);
+    }
 
     return (
         <>
@@ -83,11 +89,11 @@ function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, mov
                 <table className="">
                     <thead>
                         <tr>
-                            <TableHeader>Name</TableHeader>
-                            <td>Type</td>
-                            <td>Power</td>
-                            <td>Accuracy</td>
-                            {moveTableType == "Level Up" && <td>Level</td>}
+                            <TableHeader onClick={adjustSort}>Name</TableHeader>
+                            <TableHeader onClick={adjustSort}>Type</TableHeader>
+                            <TableHeader onClick={adjustSort}>Power</TableHeader>
+                            <TableHeader onClick={adjustSort}>Accuracy</TableHeader>
+                            {moveTableType == "Level Up" && <TableHeader onClick={adjustSort}>Level</TableHeader>}
                         </tr>
                     </thead>
                     <tbody>
@@ -99,23 +105,26 @@ function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, mov
     );
 }
 
-// Elements
-function TableHeader({ children }: { children: string }) {
+function TableHeader({ children, onClick }: { children: React.ReactNode, onClick: React.MouseEventHandler }) {
     return (
-        <td className="pr-20">
+        <td
+            className=" cursor-pointer"
+            onClick={onClick}>
             {children}
         </td>
     );
 }
 
-function TableData({ children }: { children: string }) {
-    return (
-        <td className="pr-20">
-            {children}
-        </td>
-    );
+function applySort(moveListElements: MoveElement[], sortType: string) {
+    switch (sortType) {
+        case "Name": return moveListElements.sort(sortByName);
+        case "Type": return moveListElements.sort(sortByType);
+        case "Power": return moveListElements.sort(sortByPower);
+        case "Accuracy": return moveListElements.sort(sortByAccuracy);
+        case "Level": return moveListElements.sort(sortByLevel);
+        default: throw new Error(`Sorting not implemented for ${sortType}!`);
+    }
 }
-
 
 function getTargetMoveTable(moveList: MoveList, moveTableType: MoveTableType) {
     switch (moveTableType) {
@@ -130,26 +139,35 @@ function getTargetMoveTable(moveList: MoveList, moveTableType: MoveTableType) {
     }
 }
 
-// Sorting Functions
-// FIXME : Revisit secondary sorting options
 
-function sortByName(moveA: MoveElement, moveB: MoveElement): number {
-    const nameA = moveA.move.move.name;
-    const nameB = moveB.move.move.name;
-    if (nameA < nameB) return -1;
-    if (nameA > nameB) return 1;
-    if (moveA.version.level_learned_at === moveB.version.level_learned_at) return 0;
-    return sortByLevel(moveA, moveB);
-}
-
-function sortByLevel(moveA: MoveElement, moveB: MoveElement): number {
-    const levelA = moveA.version.level_learned_at;
-    const levelB = moveB.version.level_learned_at;
-    if (levelA < levelB) return -1;
-    if (levelA > levelB) return 1;
-    return sortByName(moveA, moveB);
-}
-
+// Pairs a Move with a ReactElement to allow for easy sorting
 class MoveElement {
     constructor(public move: CombinedMove, public version: PokemonMoveVersion, public element: ReactElement) { }
+}
+
+// Sorting Functions
+function sortByLevel(moveA: MoveElement, moveB: MoveElement): number {
+    return sortByValue(moveA.version.level_learned_at, moveB.version.level_learned_at);
+}
+
+function sortByName(moveA: MoveElement, moveB: MoveElement): number {
+    return sortByValue(moveA.move.move.name, moveB.move.move.name);
+}
+
+function sortByPower(moveA: MoveElement, moveB: MoveElement): number {
+    return sortByValue(moveA.move.move.power, moveB.move.move.power);
+}
+
+function sortByAccuracy(moveA: MoveElement, moveB: MoveElement): number {
+    return sortByValue(moveA.move.move.accuracy, moveB.move.move.accuracy);
+}
+
+function sortByType(moveA: MoveElement, moveB: MoveElement): number {
+    return sortByValue(moveA.move.move.type.name, moveB.move.move.type.name);
+}
+
+function sortByValue(valueA: number | string, valueB: number | string) {
+    if (valueA < valueB) return -1;
+    if (valueA > valueB) return 1;
+    return 0;
 }
