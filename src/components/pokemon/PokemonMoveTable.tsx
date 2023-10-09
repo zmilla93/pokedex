@@ -1,11 +1,12 @@
 import { ReactElement, useState } from "react";
-import { CombinedMove, MoveList, usePokemonMoves } from '../../hooks/usePokemonMoves';
-import { cleanString } from '../../PokeAPI/Utility';
-import { TypeView } from "./TypeView";
-import { PokemonMoveVersion } from '../../PokeAPI/types/Pokemon';
-import { Column, TwoColumnView } from "../TwoColumnView";
 import { Link, useSearchParams } from 'react-router-dom';
+import { cleanString } from '../../PokeAPI/Utility';
+import { PokemonMoveVersion } from '../../PokeAPI/types/Pokemon';
 import { useGameVersion } from "../../hooks/useGameVersion";
+import { CombinedMove, MoveList, usePokemonMoves } from '../../hooks/usePokemonMoves';
+import { Column, TwoColumnView } from "../TwoColumnView";
+import { TypeView } from "./TypeView";
+import { cleanMachine } from '../../utility/StringCleaning';
 
 export type MoveTableType = "Level Up" | "TM" | "HM" | "Egg";
 
@@ -38,11 +39,12 @@ function getMoveElement(entry: CombinedMove, moveTableType: MoveTableType, searc
     const levelLearned = version.level_learned_at;
     const element = (
         <tr key={move.name + levelLearned}>
+            {moveTableType === "Level Up" && <td className={rowClass}>{levelLearned}</td>}
+            {(moveTableType === "TM" || moveTableType === "HM") && <td className={rowClass}>{cleanMachine(entry.machine!.item.name)}</td>}
             <td className={rowClass}><Link to={`/move/${move.name}?${searchParams.toString()}`}>{cleanString(move.name)}</Link>{ }</td>
             <td className={rowClass}>{<TypeView types={[move.type.name]} />}</td>
             <td className={rowClass}>{move.power ? move.power : "-"}</td>
             <td className={rowClass}>{move.accuracy ? move.accuracy : "-"}</td>
-            {moveTableType == "Level Up" && <td className={rowClass}>{levelLearned}</td>}
         </tr>
     );
     return new MoveElement(entry, version, element);
@@ -89,11 +91,13 @@ function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, mov
                 <table className="">
                     <thead>
                         <tr>
+                            {moveTableType == "Level Up" && <TableHeader onClick={adjustSort}>Level</TableHeader>}
+                            {moveTableType == "TM" && <TableHeader onClick={adjustSort}>TM</TableHeader>}
+                            {moveTableType == "HM" && <TableHeader onClick={adjustSort}>HM</TableHeader>}
                             <TableHeader onClick={adjustSort}>Name</TableHeader>
                             <TableHeader onClick={adjustSort}>Type</TableHeader>
                             <TableHeader onClick={adjustSort}>Power</TableHeader>
                             <TableHeader onClick={adjustSort}>Accuracy</TableHeader>
-                            {moveTableType == "Level Up" && <TableHeader onClick={adjustSort}>Level</TableHeader>}
                         </tr>
                     </thead>
                     <tbody>
@@ -122,6 +126,9 @@ function applySort(moveListElements: MoveElement[], sortType: string) {
         case "Power": return moveListElements.sort(sortByPower);
         case "Accuracy": return moveListElements.sort(sortByAccuracy);
         case "Level": return moveListElements.sort(sortByLevel);
+        case "TM":
+        case "HM":
+            return moveListElements.sort(sortByMachine);
         default: throw new Error(`Sorting not implemented for ${sortType}!`);
     }
 }
@@ -164,6 +171,10 @@ function sortByAccuracy(moveA: MoveElement, moveB: MoveElement): number {
 
 function sortByType(moveA: MoveElement, moveB: MoveElement): number {
     return sortByValue(moveA.move.move.type.name, moveB.move.move.type.name);
+}
+
+function sortByMachine(moveA: MoveElement, moveB: MoveElement): number {
+    return sortByValue(moveA.move.machine!.item.name, moveB.move.machine!.item.name);
 }
 
 function sortByValue(valueA: number | string, valueB: number | string) {

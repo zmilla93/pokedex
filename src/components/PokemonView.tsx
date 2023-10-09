@@ -1,12 +1,12 @@
-import { useParams } from "react-router-dom";
 import { useState } from "react";
-import { TypeView } from "./pokemon/TypeView";
-import { PokemonMoveTables } from "./pokemon/PokemonMoveTable";
-import { Column, TwoColumnView } from "./TwoColumnView";
-import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
-import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
+import { useParams } from "react-router-dom";
 import { isValidPokemon } from "../PokeAPI/Utility";
+import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
+import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
 import { Loader } from "./Loader";
+import { Column, TwoColumnView } from "./TwoColumnView";
+import { PokemonMoveTables } from "./pokemon/PokemonMoveTable";
+import { TypeView } from "./pokemon/TypeView";
 
 const starEmpty = require("Icons/star-outline.svg");
 const starFull = require("Icons/star-full-outline.svg");
