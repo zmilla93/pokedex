@@ -100,11 +100,8 @@ function ShinyButton({ src, className, onClick }: { src: string, className: stri
     return <img className={className + " absolute right-1 bottom-1 cursor-pointer"} src={src} title="Toggle Shiny" onClick={onClick} />;
 }
 
-// FIXME : Make this more robust and move to utility
-
-
 function getFlavorText(species: PokemonSpecies, gameVersion: VersionGroupValue) {
-    let flavorText = species.flavor_text_entries.find(entry => entry.version.name === gameVersion && entry.language.name == "en");
+    let flavorText = species.flavor_text_entries.find(entry => gameVersion.includes(entry.version.name) && entry.language.name == "en");
     if (flavorText === undefined) flavorText = species.flavor_text_entries.find(entry => entry.language.name === "en");
     if (flavorText === undefined) flavorText = species.flavor_text_entries[0];
     return formatFlavorText(flavorText.flavor_text);
