@@ -53,7 +53,7 @@ function getMoveElement(entry: CombinedMove, moveTableType: MoveTableType, searc
 function PokemonMoveTable({ moveList, moveTableType }: { moveList: MoveList, moveTableType: MoveTableType }) {
     const targetMoveList = getTargetMoveTable(moveList, moveTableType);
     const [searchParams] = useSearchParams();
-    const [sortType, setSortType] = useState("Name");
+    const [sortType, setSortType] = useState(getDefaultSortMethod(moveTableType));
     const [reverseSort, setReverseSort] = useState(false);
     const game = useGameVersion();
     // FIXME : Show a message that no moves are present?
@@ -130,6 +130,15 @@ function applySort(moveListElements: MoveElement[], sortType: string) {
         case "HM":
             return moveListElements.sort(sortByMachine);
         default: throw new Error(`Sorting not implemented for ${sortType}!`);
+    }
+}
+
+function getDefaultSortMethod(moveTableType: MoveTableType) {
+    switch (moveTableType) {
+        case "Level Up": return "Level";
+        case "Egg": return "Name";
+        case "TM": return "TM";
+        case "HM": return "HM";
     }
 }
 
