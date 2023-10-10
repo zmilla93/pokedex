@@ -82,6 +82,7 @@ function PokemonImage({ src, srcShiny }: { src: string, srcShiny: string }) {
     const [shiny, setShiny] = useState(false);
     const defaultVisibility = shiny ? "hidden" : "";
     const shinyVisiblity = shiny ? "" : "hidden";
+    const hasShiny = srcShiny !== null;
 
     function handleShinyClick() {
         setShiny(!shiny);
@@ -91,8 +92,8 @@ function PokemonImage({ src, srcShiny }: { src: string, srcShiny: string }) {
         <div className="relative max-w-xs bg-slate-200 border-2 border-slate-400 rounded-xl p-5 flex items-center">
             <img src={src} className={defaultVisibility} />
             <img src={srcShiny} className={shinyVisiblity} />
-            <ShinyButton src={starEmpty} onClick={handleShinyClick} className={defaultVisibility} />
-            <ShinyButton src={starFull} onClick={handleShinyClick} className={shinyVisiblity} />
+            {hasShiny && <ShinyButton src={starEmpty} onClick={handleShinyClick} className={defaultVisibility} />}
+            {hasShiny && <ShinyButton src={starFull} onClick={handleShinyClick} className={shinyVisiblity} />}
         </div>
     );
 }
