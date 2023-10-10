@@ -106,6 +106,7 @@ function getFlavorText(species: PokemonSpecies, gameVersion: VersionGroupValue) 
     let flavorText = species.flavor_text_entries.find(entry => gameVersions.includes(entry.version.name) && entry.language.name == "en");
     if (flavorText === undefined) flavorText = species.flavor_text_entries.find(entry => entry.language.name === "en");
     if (flavorText === undefined) flavorText = species.flavor_text_entries[0];
+    if (flavorText === undefined) return "";
     return formatFlavorText(flavorText.flavor_text);
 }
 
