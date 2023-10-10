@@ -5,10 +5,7 @@ export function ScrollToTop({ targetRef }: { targetRef: React.RefObject<HTMLDivE
     const { pathname } = useLocation();
     useEffect(() => {
         window.scrollTo(0, 0);
-        if (targetRef != null && targetRef.current != null) {
-            targetRef.current.scrollTo(0, 0);
-            console.log("GO");
-        }
+        if (targetRef.current != null) targetRef.current.scrollTo(0, 0);
     }, [pathname, targetRef]);
     return null;
 }
