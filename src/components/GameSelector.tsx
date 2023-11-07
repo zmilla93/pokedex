@@ -1,6 +1,7 @@
 import { ChangeEvent } from "react";
 import { gameVersions } from "../utility/data";
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { DEFAULT_GAME } from "../utility/defaults";
 
 export function GameSelector() {
 
@@ -8,7 +9,7 @@ export function GameSelector() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     let currentGame: string | null | undefined = searchParams.get("game");
-    if (currentGame === null) currentGame = undefined;
+    if (currentGame === null) currentGame = DEFAULT_GAME;
 
     function handleChange(e: ChangeEvent<HTMLSelectElement>) {
         searchParams.set("game", e.target.value);
