@@ -11,6 +11,7 @@ import { VersionGroupValue } from "../PokeAPI/types/Custom";
 import { useGameVersion } from "../hooks/useGameVersion";
 import { formatFlavorText } from "../utility/StringCleaning";
 import { gameVersionMap } from "../utility/data";
+import { ContentWrapper } from "./ContentWrapper";
 
 const starEmpty = require("Icons/star-outline.svg");
 const starFull = require("Icons/star-full-outline.svg");
@@ -27,7 +28,7 @@ export function PokemonView() {
     const imgSrc = pokemon!.sprites.other["official-artwork"].front_default;
     const imgShinySrc = pokemon!.sprites.other["official-artwork"].front_shiny;
     return (
-        <div>
+        <ContentWrapper>
             <div className="px-5">
                 <div className="border-2 border-gray-400 rounded p-4 my-4 text-2xl text-gray-400 text-center">
                     {pokemonName} | #{pokemon!.id}
@@ -46,7 +47,7 @@ export function PokemonView() {
                 </Column>
             </TwoColumnView>
             <PokemonMoveTables pokemonName={pokemonName} />
-        </div>
+        </ContentWrapper>
     );
 }
 

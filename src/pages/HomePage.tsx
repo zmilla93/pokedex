@@ -1,8 +1,10 @@
+import { CenterWrapper } from "../components/CenterWrapper";
 
 
 export function HomePage() {
     return (
-        <div>
+        <div className="flex h-full bg-red-400">
+
             Homepage!
         </div>
     );

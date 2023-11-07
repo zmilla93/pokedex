@@ -4,6 +4,7 @@ import { PageWrapper } from "./pages/PageWrapper";
 import { DebugView } from "./pages/Debug";
 import { MovePage } from "./pages/MovePage";
 import '../src/css/loaders.css';
+import { HomePage } from "./pages/HomePage";
 
 // Hash browser needs to be used when hosting on github pages
 // due to not having access to server side routing features.
@@ -12,7 +13,7 @@ const useHashRouter = true;
 export default function App() {
     const routerContents = (
         <Route path="/" element={<PageWrapper />} >
-            {/* <Route index path="test" element={"Test!"} /> */}
+            <Route index element={<HomePage />} />
             <Route path="pokemon" element={"Pokemon Landing Page! FIXME"} />
             <Route path="pokemon/:pokemonName" element={<PokemonView />} />
 

@@ -7,6 +7,7 @@ import { ReactNode } from 'react';
 import { Column, TwoColumnView } from '../components/TwoColumnView';
 import { VersionGroupValue } from '../PokeAPI/types/Custom';
 import { useGameVersion } from '../hooks/useGameVersion';
+import { ContentWrapper } from '../components/ContentWrapper';
 
 export function MovePage() {
     const params = useParams();
@@ -43,7 +44,7 @@ export function MovePage() {
         );
     });
     return (
-        <div>
+        <ContentWrapper>
             <TwoColumnView>
                 <Column>
                     <table>
@@ -76,7 +77,7 @@ export function MovePage() {
             <div className="flex flex-wrap">
                 {learnedBy}
             </div>
-        </div>
+        </ContentWrapper>
     );
 }
 

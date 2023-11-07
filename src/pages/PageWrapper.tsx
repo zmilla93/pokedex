@@ -14,9 +14,7 @@ export function PageWrapper() {
                 className="flex flex-col flex-grow flex-shrink overflow-auto items-center bg-blue-200"
                 ref={scrollRef}>
                 <ScrollToTop targetRef={scrollRef} />
-                <div id="contentWrapper" className=" max-w-5xl bg-orange-200">
-                    <Outlet />
-                </div>
+                <Outlet />
             </div>
         </div>
     );
