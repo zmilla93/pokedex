@@ -89,6 +89,8 @@ export function SearchBar() {
     }
 
     function submitSearch(nextSearchTerm = searchTerm) {
+        nextSearchTerm = nextSearchTerm.trim();
+        if (nextSearchTerm === null || nextSearchTerm === "") return;
         if (selectedIndex > -1) {
             nextSearchTerm = searchResults[selectedIndex].item;
             setSearchTerm(nextSearchTerm);
