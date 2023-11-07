@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { isValidPokemon } from "../PokeAPI/Utility";
 import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
@@ -12,6 +12,7 @@ import { useGameVersion } from "../hooks/useGameVersion";
 import { formatFlavorText } from "../utility/StringCleaning";
 import { gameVersionMap } from "../utility/data";
 import { ContentWrapper } from "./ContentWrapper";
+import { setTitle } from "../utility/util";
 
 const starEmpty = require("Icons/star-outline.svg");
 const starFull = require("Icons/star-full-outline.svg");
@@ -21,6 +22,12 @@ export function PokemonView() {
     if (pokemonName === undefined) pokemonName = "";
     const pokeData = usePokemon(pokemonName);
     const gameVersion = useGameVersion();
+    useEffect(() => {
+
+        setTitle(pokemonName!);
+        // if (pokemonName === "" || pokemonName === undefined) return;
+        // document.title = pokemonName;
+    });
     if (!isValidPokemon(pokemonName)) return (<div>Invalid pokemon!</div>);
     if (!validatePokemonData(pokeData)) return (<Loader />);
     const { pokemon, species } = pokeData;
