@@ -23,10 +23,7 @@ export function PokemonView() {
     const pokeData = usePokemon(pokemonName);
     const gameVersion = useGameVersion();
     useEffect(() => {
-
         setTitle(pokemonName!);
-        // if (pokemonName === "" || pokemonName === undefined) return;
-        // document.title = pokemonName;
     });
     if (!isValidPokemon(pokemonName)) return (<div>Invalid pokemon!</div>);
     if (!validatePokemonData(pokeData)) return (<Loader />);
