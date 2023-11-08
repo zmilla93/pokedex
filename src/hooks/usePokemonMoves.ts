@@ -33,6 +33,7 @@ export function usePokemonMoves(pokemonName: string, filter: VersionGroupValue):
     const [machines, setMachines] = useState<Machine[]>([]);
     const [hasMoveResponse, setHasMoveResponse] = useState(false);
     const [hasMachineResponse, setHasMachineResponse] = useState(false);
+
     // Fetch move data
     useEffect(() => {
         if (!validName) {
@@ -41,6 +42,8 @@ export function usePokemonMoves(pokemonName: string, filter: VersionGroupValue):
             setHasMachineResponse(false);
             return;
         }
+        setHasMoveResponse(false);
+        setHasMachineResponse(false);
         (async () => {
             const [nextPokemonMoves, nextMoves] = await fetchData(pokemonName);
             setPokemonMoves(nextPokemonMoves);
@@ -51,6 +54,7 @@ export function usePokemonMoves(pokemonName: string, filter: VersionGroupValue):
 
     // Fetch machine data
     useEffect(() => {
+        setHasMachineResponse(false);
         (async () => {
             const nextMachines = await fetchMachineData(pokemonMoves, moves, filter);
             setMachines(nextMachines);
