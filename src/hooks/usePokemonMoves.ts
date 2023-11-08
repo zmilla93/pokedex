@@ -19,23 +19,33 @@ export interface MoveList {
     eggMoves: CombinedMove[];
 }
 
-export function usePokemonMoves(pokemonName: string, filter: VersionGroupValue) {
+export interface MoveData {
+    moveList: MoveList | undefined;
+    hasMoveResponse: boolean;
+    hasMachineResponse: boolean;
+}
+
+export function usePokemonMoves(pokemonName: string, filter: VersionGroupValue): MoveData {
     const validName = isValidPokemon(pokemonName);
     const [moveList, setMoveList] = useState<MoveList>();
     const [pokemonMoves, setPokemonMoves] = useState<PokemonMove[]>([]);
     const [moves, setMoves] = useState<Move[]>([]);
     const [machines, setMachines] = useState<Machine[]>([]);
-
+    const [hasMoveResponse, setHasMoveResponse] = useState(false);
+    const [hasMachineResponse, setHasMachineResponse] = useState(false);
     // Fetch move data
     useEffect(() => {
         if (!validName) {
             setMoveList(undefined);
+            setHasMoveResponse(false);
+            setHasMachineResponse(false);
             return;
         }
         (async () => {
             const [nextPokemonMoves, nextMoves] = await fetchData(pokemonName);
             setPokemonMoves(nextPokemonMoves);
             setMoves(nextMoves);
+            setHasMoveResponse(true);
         })();
     }, [pokemonName, validName]);
 
@@ -44,15 +54,20 @@ export function usePokemonMoves(pokemonName: string, filter: VersionGroupValue) 
         (async () => {
             const nextMachines = await fetchMachineData(pokemonMoves, moves, filter);
             setMachines(nextMachines);
+            setHasMachineResponse(hasMoveResponse);
         })();
-    }, [pokemonMoves, moves, filter]);
+    }, [pokemonMoves, moves, filter, hasMoveResponse]);
 
     // Filter move data into different categories based on target game
     useEffect(() => {
         const combinedMoves = filterData(pokemonMoves, moves, machines, filter);
         setMoveList(combinedMoves);
     }, [pokemonMoves, moves, machines, filter]);
-    return moveList;
+    return {
+        moveList: moveList,
+        hasMoveResponse: hasMoveResponse,
+        hasMachineResponse: hasMachineResponse,
+    };
 }
 
 async function fetchData(pokemonName: string): Promise<[PokemonMove[], Move[]]> {
@@ -64,7 +79,7 @@ async function fetchData(pokemonName: string): Promise<[PokemonMove[], Move[]]> 
     return [pokemon.moves, moveResponses];
 }
 
-async function fetchMachineData(pokemonMoves: PokemonMove[], moves: Move[], gameVersion: VersionGroupValue) {
+async function fetchMachineData(pokemonMoves: PokemonMove[], moves: Move[], gameVersion: VersionGroupValue): Promise<Machine[]> {
     const machineRequests: Promise<Machine>[] = [];
     const machineIds: number[] = [];
     for (let i = 0; i < pokemonMoves.length; i++) {
@@ -125,7 +140,7 @@ function filterData(pokemonMoves: PokemonMove[], moves: Move[], machines: Machin
     };
 }
 
-function isMoveLearnableByMachine(pokemonMove: PokemonMove) {
+function isMoveLearnableByMachine(pokemonMove: PokemonMove): boolean {
     for (let i = 0; i < pokemonMove.version_group_details.length; i++)
         if (pokemonMove.version_group_details[i].move_learn_method.name === "machine") return true;
     return false;

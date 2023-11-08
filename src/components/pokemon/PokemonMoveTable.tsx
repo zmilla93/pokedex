@@ -12,22 +12,23 @@ export type MoveTableType = "Level Up" | "TM" | "HM" | "Egg";
 
 export function PokemonMoveTables({ pokemonName }: { pokemonName: string, moveTableType?: MoveTableType }) {
     const gameVersion = useGameVersion();
-    const moveList = usePokemonMoves(pokemonName, gameVersion);
+    const { moveList, hasMoveResponse, hasMachineResponse } = usePokemonMoves(pokemonName, gameVersion);
     if (moveList === undefined) return;
     const learnTable = <PokemonMoveTable key="Level Up" moveList={moveList} moveTableType="Level Up" />;
     const eggTable = <PokemonMoveTable key="Egg" moveList={moveList} moveTableType="Egg" />;
     const tmTable = <PokemonMoveTable key="TM" moveList={moveList} moveTableType="TM" />;
     const hmTable = <PokemonMoveTable key="HM" moveList={moveList} moveTableType="HM" />;
+    // FIXME : Dialog for loading
+    const leftCol = hasMoveResponse ? <>{learnTable}{eggTable}</> : "Loading Moves...";
+    const rightCol = hasMachineResponse ? <>{tmTable}{hmTable}</> : "Loading Machines...";
 
     return (
         <TwoColumnView>
             <Column center>
-                {learnTable}
-                {eggTable}
+                {leftCol}
             </Column>
             <Column center>
-                {tmTable}
-                {hmTable}
+                {rightCol}
             </Column>
         </TwoColumnView>
     );
