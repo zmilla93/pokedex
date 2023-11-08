@@ -13,6 +13,7 @@ import { formatFlavorText } from "../utility/StringCleaning";
 import { gameVersionMap } from "../utility/data";
 import { ContentWrapper } from "./ContentWrapper";
 import { setTitle } from "../utility/util";
+import { SpriteViewer } from "./SpriteViewer";
 
 const starEmpty = require("Icons/star-outline.svg");
 const starFull = require("Icons/star-full-outline.svg");
@@ -38,7 +39,6 @@ export function PokemonView() {
                     {pokemonName} | #{pokemon!.id}
                 </div>
             </div>
-
             <TwoColumnView className="bg-red-400 box-border p-5">
                 <Column center>
                     <PokemonImage src={imgSrc} srcShiny={imgShinySrc} />
@@ -50,6 +50,7 @@ export function PokemonView() {
                     </div>
                 </Column>
             </TwoColumnView>
+            <SpriteViewer data={pokemon} />
             <PokemonMoveTables pokemonName={pokemonName} />
         </ContentWrapper>
     );
