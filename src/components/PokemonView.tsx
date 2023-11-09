@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { isValidPokemon } from "../PokeAPI/Utility";
 import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
 import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
@@ -15,6 +15,7 @@ import { ContentWrapper } from "./ContentWrapper";
 import { SpriteViewer } from "./SpriteViewer";
 import { useTitle } from "../hooks/useTitle";
 import { EvolutionTable } from "./pokemon/EvolutionTable";
+import { getPreviousAndNextPokemon } from "../utility/util";
 
 const starEmpty = require("Icons/star-outline.svg");
 const starFull = require("Icons/star-full-outline.svg");
@@ -24,6 +25,9 @@ export function PokemonView() {
     if (pokemonName === undefined) pokemonName = "";
     const pokeData = usePokemon(pokemonName);
     const gameVersion = useGameVersion();
+    const [previousPokemon, nextPokemon] = getPreviousAndNextPokemon(pokemonName);
+    console.log(previousPokemon);
+    console.log(nextPokemon);
     useTitle(pokemonName);
     if (!isValidPokemon(pokemonName)) return (<div>Invalid pokemon!</div>);
     if (!validatePokemonData(pokeData)) return (<Loader />);
@@ -38,6 +42,8 @@ export function PokemonView() {
                     {pokemonName} | #{pokemon!.id}
                 </div>
             </div>
+            <PreviousNextButton name={previousPokemon} />
+            <PreviousNextButton name={nextPokemon} next />
             <TwoColumnView className="bg-red-400 box-border p-5">
                 <Column center>
                     <PokemonImage src={imgSrc} srcShiny={imgShinySrc} />
@@ -53,6 +59,20 @@ export function PokemonView() {
             <SpriteViewer data={pokemon} />
             <PokemonMoveTables pokemonName={pokemonName} />
         </ContentWrapper>
+    );
+}
+
+function PreviousNextButton({ name, next = false }: { name: string | null, next?: boolean }) {
+    const location = useLocation();
+    if (name === null) return;
+    return (
+        <div>
+            <Link to={"/pokemon/" + name + location.search} >
+                {next ? "Next" : "Previous"}
+                {" | "}
+                {name}
+            </Link>
+        </div>
     );
 }
 
