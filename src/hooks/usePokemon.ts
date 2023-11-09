@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import api from "../PokeAPI/PokeAPI";
 import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
 import { isValidPokemon } from '../PokeAPI/Utility';
+import { EvolutionChain } from "../PokeAPI/types/Evolution";
 
 export function usePokemon(pokemonName: string) {
     const [pokemon, setPokemon] = useState<Pokemon | undefined>();
     const [speciesId, setSpeciesId] = useState<string | undefined>();
     const [species, setSpecies] = useState<PokemonSpecies>();
+    const [evolutionChain, setEvolutionChain] = useState<EvolutionChain>();
     const validPokemonName = isValidPokemon(pokemonName);
     function clearData() {
         setPokemon(undefined);
@@ -35,9 +37,16 @@ export function usePokemon(pokemonName: string) {
             .then(d => setSpecies(d))
             .catch(e => console.error(e));
     }, [speciesId]);
+    useEffect(() => {
+        if (species === undefined) return;
+        api.request<EvolutionChain>(species.evolution_chain.url)
+            .then(d => setEvolutionChain(d))
+            .catch(e => console.error(e));
+    }, [species]);
     const data: PokemonData = {
         pokemon: pokemon,
         species: species,
+        evolutionChain: evolutionChain,
     };
     return data;
 }
@@ -45,6 +54,7 @@ export function usePokemon(pokemonName: string) {
 interface PokemonData {
     pokemon: Pokemon | undefined;
     species: PokemonSpecies | undefined;
+    evolutionChain: EvolutionChain | undefined;
 }
 
 export function validatePokemonData(data: PokemonData): boolean {

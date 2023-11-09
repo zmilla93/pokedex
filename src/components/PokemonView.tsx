@@ -14,6 +14,7 @@ import { gameVersionMap } from "../utility/data";
 import { ContentWrapper } from "./ContentWrapper";
 import { SpriteViewer } from "./SpriteViewer";
 import { useTitle } from "../hooks/useTitle";
+import { EvolutionTable } from "./pokemon/EvolutionTable";
 
 const starEmpty = require("Icons/star-outline.svg");
 const starFull = require("Icons/star-full-outline.svg");
@@ -26,7 +27,7 @@ export function PokemonView() {
     useTitle(pokemonName);
     if (!isValidPokemon(pokemonName)) return (<div>Invalid pokemon!</div>);
     if (!validatePokemonData(pokeData)) return (<Loader />);
-    const { pokemon, species } = pokeData;
+    const { pokemon, species, evolutionChain } = pokeData;
     const flavorText = getFlavorText(species!, gameVersion);
     const imgSrc = pokemon!.sprites.other["official-artwork"].front_default;
     const imgShinySrc = pokemon!.sprites.other["official-artwork"].front_shiny;
@@ -48,6 +49,7 @@ export function PokemonView() {
                     </div>
                 </Column>
             </TwoColumnView>
+            <EvolutionTable data={evolutionChain} />
             <SpriteViewer data={pokemon} />
             <PokemonMoveTables pokemonName={pokemonName} />
         </ContentWrapper>
