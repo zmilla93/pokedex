@@ -1,9 +1,7 @@
-import { MAX_WIDTH } from "../utility/defaults";
-import { setTitle } from "../utility/util";
-
+import { useTitle } from "../hooks/useTitle";
 
 export function HomePage() {
-    setTitle();
+    useTitle();
     return (
         <div className={`flex items-center h-full w-full`}>
             <div className="w-full bg-blue-300 m-20 py-20 flex rounded-lg">

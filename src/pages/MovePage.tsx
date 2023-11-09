@@ -3,12 +3,12 @@ import assert from '../utility/assert';
 import { useMove } from '../hooks/useMove';
 import { Move } from '../PokeAPI/types/Moves';
 import { TypeView } from '../components/pokemon/TypeView';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode } from 'react';
 import { Column, TwoColumnView } from '../components/TwoColumnView';
 import { VersionGroupValue } from '../PokeAPI/types/Custom';
 import { useGameVersion } from '../hooks/useGameVersion';
 import { ContentWrapper } from '../components/ContentWrapper';
-import { setTitle } from '../utility/util';
+import { useTitle } from '../hooks/useTitle';
 
 export function MovePage() {
     const params = useParams();
@@ -19,9 +19,7 @@ export function MovePage() {
 
     assert(() => moveName !== undefined, "Move is undefined!");
     const moveDataUnchecked = useMove(moveName!);
-    useEffect(() => {
-        if (moveName) setTitle(moveName);
-    });
+    useTitle(moveName);
     if (moveName === undefined || moveDataUnchecked === undefined) {
         // FIXME
         return (
