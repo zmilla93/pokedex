@@ -34,7 +34,8 @@ export class PokeApi {
 		if (response !== undefined) this.cacheHitCount++;
 		else {
 			this.fetchCount++;
-			response = fetch(PokeApi.URL + endpoint + "?" + limitData)
+			if (!endpoint.startsWith("http")) endpoint = PokeApi.URL + endpoint;
+			response = fetch(endpoint + "?" + limitData)
 				.then(data => {
 					if (!data.ok || data.status !== 200) throw new Error(`Failed to fetch data from '${endpoint}', status '${data.status}'.`);
 					return data.json();
