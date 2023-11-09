@@ -13,7 +13,6 @@ export function EvolutionTable({ data }: { data: EvolutionChain | undefined }) {
     evoData.forEach(e => {
         if (e.length < curLen) throw new Error("Reduction in evolution count size!");
         curLen = e.length;
-        console.log(curLen);
     });
     return (
         <div>
