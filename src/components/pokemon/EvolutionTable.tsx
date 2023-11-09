@@ -7,25 +7,29 @@ interface EvolutionEntry {
 
 export function EvolutionTable({ data }: { data: EvolutionChain | undefined }) {
     if (data === undefined) return null;
-    const stuff = parseChain(data);
-    console.log(stuff);
+    const evoData = parseChain(data);
+    // FIXME : Remove length check after testing
+    let curLen = 0;
+    evoData.forEach(e => {
+        if (e.length < curLen) throw new Error("Reduction in evolution count size!");
+        curLen = e.length;
+        console.log(curLen);
+    });
     return (
         <div>
-            {/* {data.chain.species} */}
-            {/* {stuff} */}
         </div>
     );
 }
 
 function parseChain(data: EvolutionChain) {
-    const stuff: EvolutionEntry[][] = [];
+    const entries: EvolutionEntry[][] = [];
     const base: EvolutionEntry = {
         name: data.chain.species.name,
         details: data.chain.evolution_details[0],
     };
-    stuff.push([base]);
-    recursiveAppendData(stuff, data.chain, 1);
-    return stuff;
+    entries.push([base]);
+    recursiveAppendData(entries, data.chain, 1);
+    return entries;
 }
 
 function recursiveAppendData(data: EvolutionEntry[][], entry: ChainLink, index: number) {
@@ -36,7 +40,7 @@ function recursiveAppendData(data: EvolutionEntry[][], entry: ChainLink, index: 
             details: link.evolution_details[0],
         };
         // FIXME: Remove this error after testing
-        if (link.evolution_details.length > 1) console.error("Pokemon found with multiple evolution details!");
+        if (link.evolution_details.length > 1) throw new Error("Pokemon found with multiple evolution details!");
         data[index].push(evoEntry);
         recursiveAppendData(data, link, index + 1);
     });
