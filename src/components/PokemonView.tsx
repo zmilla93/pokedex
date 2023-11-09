@@ -9,7 +9,7 @@ import { PokemonMoveTables } from "./pokemon/PokemonMoveTable";
 import { TypeView } from "./pokemon/TypeView";
 import { VersionGroupValue } from "../PokeAPI/types/Custom";
 import { useGameVersion } from "../hooks/useGameVersion";
-import { formatFlavorText } from "../utility/StringCleaning";
+import { formatFlavorText, dataToCleanString } from '../utility/StringCleaning';
 import { gameVersionMap } from "../utility/data";
 import { ContentWrapper } from "./ContentWrapper";
 import { SpriteViewer } from "./SpriteViewer";
@@ -26,9 +26,7 @@ export function PokemonView() {
     const pokeData = usePokemon(pokemonName);
     const gameVersion = useGameVersion();
     const [previousPokemon, nextPokemon] = getPreviousAndNextPokemon(pokemonName);
-    console.log(previousPokemon);
-    console.log(nextPokemon);
-    useTitle(pokemonName);
+    useTitle(dataToCleanString(pokemonName));
     if (!isValidPokemon(pokemonName)) return (<div>Invalid pokemon!</div>);
     if (!validatePokemonData(pokeData)) return (<Loader />);
     const { pokemon, species, evolutionChain } = pokeData;
@@ -39,7 +37,7 @@ export function PokemonView() {
         <ContentWrapper>
             <div className="px-5">
                 <div className="border-2 border-gray-400 rounded p-4 my-4 text-2xl text-gray-400 text-center">
-                    {pokemonName} | #{pokemon!.id}
+                    {dataToCleanString(pokemonName)} | #{pokemon!.id}
                 </div>
             </div>
             <PreviousNextButton name={previousPokemon} />
@@ -70,7 +68,7 @@ function PreviousNextButton({ name, next = false }: { name: string | null, next?
             <Link to={"/pokemon/" + name + location.search} >
                 {next ? "Next" : "Previous"}
                 {" | "}
-                {name}
+                {dataToCleanString(name)}
             </Link>
         </div>
     );
@@ -78,7 +76,7 @@ function PreviousNextButton({ name, next = false }: { name: string | null, next?
 
 function StatTable({ pokemon, species }: { pokemon: Pokemon, species: PokemonSpecies }) {
     const namedData = {
-        Name: pokemon.name,
+        Name: dataToCleanString(pokemon.name),
         Height: formatHeight(pokemon.height),
         Weight: formatWeight(pokemon.weight),
         Species: species.genera.find(v => v.language.name === "en")?.genus,

@@ -9,6 +9,7 @@ import { VersionGroupValue } from '../PokeAPI/types/Custom';
 import { useGameVersion } from '../hooks/useGameVersion';
 import { ContentWrapper } from '../components/ContentWrapper';
 import { useTitle } from '../hooks/useTitle';
+import { dataToCleanString } from '../utility/StringCleaning';
 
 export function MovePage() {
     const params = useParams();
@@ -19,7 +20,7 @@ export function MovePage() {
 
     assert(() => moveName !== undefined, "Move is undefined!");
     const moveDataUnchecked = useMove(moveName!);
-    useTitle(moveName);
+    useTitle(dataToCleanString(moveName!));
     if (moveName === undefined || moveDataUnchecked === undefined) {
         // FIXME
         return (

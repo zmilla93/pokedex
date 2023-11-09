@@ -1,12 +1,11 @@
 import { ReactElement, useState } from "react";
 import { Link, useSearchParams } from 'react-router-dom';
-import { cleanString } from '../../PokeAPI/Utility';
 import { PokemonMoveVersion } from '../../PokeAPI/types/Pokemon';
 import { useGameVersion } from "../../hooks/useGameVersion";
 import { CombinedMove, MoveList, usePokemonMoves } from '../../hooks/usePokemonMoves';
 import { Column, TwoColumnView } from "../TwoColumnView";
 import { TypeView } from "./TypeView";
-import { cleanMachine } from '../../utility/StringCleaning';
+import { cleanMachine, dataToCleanString } from '../../utility/StringCleaning';
 
 export type MoveTableType = "Level Up" | "TM" | "HM" | "Egg";
 
@@ -42,7 +41,7 @@ function getMoveElement(entry: CombinedMove, moveTableType: MoveTableType, searc
         <tr key={move.name + levelLearned}>
             {moveTableType === "Level Up" && <td className={rowClass}>{levelLearned}</td>}
             {(moveTableType === "TM" || moveTableType === "HM") && <td className={rowClass}>{cleanMachine(entry.machine!.item.name)}</td>}
-            <td className={rowClass}><Link to={`/move/${move.name}?${searchParams.toString()}`}>{cleanString(move.name)}</Link>{ }</td>
+            <td className={rowClass}><Link to={`/move/${move.name}?${searchParams.toString()}`}>{dataToCleanString(move.name)}</Link>{ }</td>
             <td className={rowClass}>{<TypeView types={[move.type.name]} />}</td>
             <td className={rowClass}>{move.power ? move.power : "-"}</td>
             <td className={rowClass}>{move.accuracy ? move.accuracy : "-"}</td>
