@@ -1,5 +1,5 @@
 import { ChangeEvent } from "react";
-import { gameVersions } from "../utility/data";
+import { gameVersions, gameVersionsClean } from "../utility/data";
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { DEFAULT_GAME } from "../utility/defaults";
 
@@ -10,15 +10,16 @@ export function GameSelector() {
     const [searchParams] = useSearchParams();
     let currentGame: string | null | undefined = searchParams.get("game");
     if (currentGame === null) currentGame = DEFAULT_GAME;
-
-    function handleChange(e: ChangeEvent<HTMLSelectElement>) {
-        searchParams.set("game", e.target.value);
-        navigate(location.pathname + "?" + searchParams.toString(), { replace: true });
-    }
-
-    const options = gameVersions.map(v => {
+    const currentGameClean = gameVersionsClean[gameVersions.indexOf(currentGame)];
+    const options = gameVersionsClean.map(v => {
         return (<option key={v}>{v}</option>);
     });
+
+    function handleChange(e: ChangeEvent<HTMLSelectElement>) {
+        const value = gameVersions[e.target.selectedIndex];
+        searchParams.set("game", value);
+        navigate(location.pathname + "?" + searchParams.toString(), { replace: true });
+    }
 
     return (
         <div>
@@ -26,9 +27,8 @@ export function GameSelector() {
                 className="border border-black rounded outline-none"
                 name="gameVersion"
                 onChange={handleChange}
-                value={currentGame}
+                value={currentGameClean}
             >
-                <option className="hidden"></option>
                 {options}
             </select>
         </div>
