@@ -1,7 +1,9 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { pokemonNames } from '../utility/data';
 import Fuse from "fuse.js";
+import { SearchFuseContext, usePokemonMovesContext, usePokemonNamesContext } from "../hooks/DataListsContext";
+import { cleanStringToData } from '../utility/StringCleaning';
 
 const fuseOptions = {
     isCaseSensitive: false,
@@ -18,7 +20,7 @@ const fuseOptions = {
     // ignoreFieldNorm: false,
     // fieldNormWeight: 1,
 };
-const fuse = new Fuse(pokemonNames, fuseOptions);
+// const fuse = new Fuse(pokemonNames, fuseOptions);
 const MAX_SEARCH_RESULTS = 10;
 
 type searchTermIndexCallback = (index: number) => void;
@@ -33,6 +35,9 @@ export function SearchBar() {
     const [searchBoxFocused, setSearchBoxFocused] = useState(false);
     const [searchResults, setSearchResults] = useState<Fuse.FuseResult<string>[]>([]);
     const [selectedIndex, setSelectedIndex] = useState(-1);
+    const fuse = useContext(SearchFuseContext);
+    const [pokemonNames] = usePokemonNamesContext();
+    const [pokemonMoves] = usePokemonMovesContext();
 
     function adjustSelectedIndex(shift: number) {
         let newIndex = selectedIndex + shift;
@@ -99,7 +104,13 @@ export function SearchBar() {
             const textInput = textInputRef.current as HTMLDivElement;
             textInput.blur();
         }
-        navigate("/pokemon/" + nextSearchTerm + location.search);
+        const cleanSearchTerm = cleanStringToData(nextSearchTerm);
+        let searchPrefix = "unknown";
+        if (pokemonNames?.includes(cleanSearchTerm)) searchPrefix = "pokemon";
+        else if (pokemonMoves?.includes(cleanSearchTerm)) searchPrefix = "move";
+        console.log(nextSearchTerm);
+        console.log(cleanSearchTerm);
+        navigate("/" + searchPrefix + "/" + cleanSearchTerm + location.search);
         setSearchTerm("");
         setSelectedIndex(-1);
         setSearchResults([]);

@@ -37,8 +37,8 @@ const fuseOptions = {
     // ignoreFieldNorm: false,
     // fieldNormWeight: 1,
 };
-const SearchFuseContext = createContext<Fuse<string>>(new Fuse([], fuseOptions));
-const MAX_SEARCH_RESULTS = 10;
+export const SearchFuseContext = createContext<Fuse<string>>(new Fuse([], fuseOptions));
+// const MAX_SEARCH_RESULTS = 10;
 
 // FIXME : Might not need raw values, clean values might suffice
 function useListContext(context: Context<ListContext>, endpoint: string) {
