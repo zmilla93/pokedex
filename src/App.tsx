@@ -5,7 +5,7 @@ import { DebugView } from "./pages/Debug";
 import { MovePage } from "./pages/MovePage";
 import '../src/css/loaders.css';
 import { HomePage } from "./pages/HomePage";
-import { DataListsContextProvider } from "./hooks/DataListsContext";
+import { DataListsContextProvider } from "./contexts/DataListsContext";
 
 // Hash browser needs to be used when hosting on github pages
 // due to not having access to server side routing features.

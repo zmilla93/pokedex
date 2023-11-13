@@ -2,7 +2,7 @@ import { useContext, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { pokemonNames } from '../utility/data';
 import Fuse from "fuse.js";
-import { SearchFuseContext, usePokemonMovesContext, usePokemonNamesContext } from "../hooks/DataListsContext";
+import { SearchFuseContext, PokemonAsset, usePokemonMovesContext, usePokemonNamesContext } from "../contexts/DataListsContext";
 import { cleanStringToData } from '../utility/StringCleaning';
 
 const fuseOptions = {
@@ -33,7 +33,7 @@ export function SearchBar() {
     const textInputRef = useRef(null);
     const searchTermsRef = useRef(null);
     const [searchBoxFocused, setSearchBoxFocused] = useState(false);
-    const [searchResults, setSearchResults] = useState<Fuse.FuseResult<string>[]>([]);
+    const [searchResults, setSearchResults] = useState<Fuse.FuseResult<PokemonAsset>[]>([]);
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const fuse = useContext(SearchFuseContext);
     const [pokemonNames] = usePokemonNamesContext();
@@ -80,7 +80,7 @@ export function SearchBar() {
         adjustDropdownVisibility(nextFocused, searchResults);
     }
 
-    function adjustDropdownVisibility(nextFocus: boolean, nextSearchResults: Fuse.FuseResult<string>[]) {
+    function adjustDropdownVisibility(nextFocus: boolean, nextSearchResults: Fuse.FuseResult<PokemonAsset>[]) {
         if (searchTermsRef.current === null) return;
         const searchTermsDiv = searchTermsRef.current as HTMLDivElement;
         let show = true;
@@ -97,7 +97,7 @@ export function SearchBar() {
         nextSearchTerm = nextSearchTerm.trim();
         if (nextSearchTerm === null || nextSearchTerm === "") return;
         if (selectedIndex > -1) {
-            nextSearchTerm = searchResults[selectedIndex].item;
+            nextSearchTerm = searchResults[selectedIndex].item.name;
             setSearchTerm(nextSearchTerm);
         }
         if (textInputRef.current != null) {
@@ -122,8 +122,8 @@ export function SearchBar() {
 
     const resultElements = searchResults.map((value, index) => {
         return <SearchElement
-            key={value.item}
-            value={value.item}
+            key={value.item.name + value.item.type}
+            asset={value.item}
             index={index}
             selectedIndex={selectedIndex}
             onMouseOver={handleMouseOver}
@@ -162,20 +162,21 @@ export function SearchBar() {
 }
 
 interface SearchElementParams {
-    value: string;
+    asset: PokemonAsset;
     index: number;
     selectedIndex: number,
     onMouseOver: searchTermIndexCallback,
     onClick: searchTermIndexCallback,
 }
 
-function SearchElement({ value, index, selectedIndex, onMouseOver, onClick }: SearchElementParams) {
-    let className = "cursor-pointer";
+function SearchElement({ asset, index, selectedIndex, onMouseOver, onClick }: SearchElementParams) {
+    let className = "cursor-pointer flex justify-between";
     const selectedClassName = "text-red-500";
     if (index === selectedIndex) className += " " + selectedClassName;
     return (
         <div className={className} onMouseOver={() => onMouseOver(index)} onMouseDown={() => onClick(index)}>
-            {value}
+            <span>{asset.name}</span>
+            <span className=" text-xs text-gray-500">{asset.type}</span>
         </div>
     );
 }

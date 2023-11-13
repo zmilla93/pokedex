@@ -17,28 +17,17 @@ const DEFAULT_LIST_CONTEXT: ListContext = {
     cleanValues: null,
     setCleanValues: () => { }
 };
+
 const PokemonNamesContext = createContext(DEFAULT_LIST_CONTEXT);
 const PokemonMovesContext = createContext(DEFAULT_LIST_CONTEXT);
-const SearchListContext = createContext<string[]>([]);
-
-// Fuse
+const SearchListContext = createContext<PokemonAsset[]>([]);
 const fuseOptions = {
+    keys: ["name"],
     isCaseSensitive: false,
-    // includeScore: false,
-    // shouldSort: true,
-    // includeMatches: false,
-    // findAllMatches: false,
-    // minMatchCharLength: 1,
-    // location: 0,
     threshold: 0.0,
-    // distance: 100,
-    // useExtendedSearch: false,
     ignoreLocation: true,
-    // ignoreFieldNorm: false,
-    // fieldNormWeight: 1,
 };
-export const SearchFuseContext = createContext<Fuse<string>>(new Fuse([], fuseOptions));
-// const MAX_SEARCH_RESULTS = 10;
+export const SearchFuseContext = createContext<Fuse<PokemonAsset>>(new Fuse([], fuseOptions));
 
 // FIXME : Might not need raw values, clean values might suffice
 function useListContext(context: Context<ListContext>, endpoint: string) {
@@ -72,9 +61,11 @@ export function DataListsContextProvider({ children }: { children?: ReactNode })
     const [cleanPokemonNames, setCleanPokemonNames] = useState<null | string[]>(null);
     const [pokemonMoves, setPokemonMoves] = useState<null | string[]>(null);
     const [cleanPokemonMoves, setCleanPokemonMoves] = useState<null | string[]>(null);
-    let combinedLists: string[] = [];
-    if (cleanPokemonNames !== null && cleanPokemonMoves !== null)
-        combinedLists = [...cleanPokemonNames, ...cleanPokemonMoves];
+    const combinedLists: PokemonAsset[] = [];
+    if (cleanPokemonNames !== null && cleanPokemonMoves !== null) {
+        cleanPokemonNames.forEach(value => combinedLists.push(new PokemonAsset(value, "Pokemon")));
+        cleanPokemonMoves.forEach(value => combinedLists.push(new PokemonAsset(value, "Move")));
+    }
     const fuse = new Fuse(combinedLists, fuseOptions);
     return (
         <PokemonNamesContext.Provider value={{
@@ -93,4 +84,10 @@ export function DataListsContextProvider({ children }: { children?: ReactNode })
             </PokemonMovesContext.Provider>
         </PokemonNamesContext.Provider>
     );
+}
+
+export type PokemonAssetType = "Pokemon" | "Move";
+
+export class PokemonAsset {
+    constructor(public name: string, public type: PokemonAssetType) { }
 }

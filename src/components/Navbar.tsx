@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { GameSelector } from "./GameSelector";
 import { SearchBar } from "./SearchBox";
-import { usePokemonMovesContext, usePokemonNamesContext } from "../hooks/DataListsContext";
+import { usePokemonMovesContext, usePokemonNamesContext } from "../contexts/DataListsContext";
 
 export function Navbar() {
     const location = useLocation();
