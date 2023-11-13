@@ -1,31 +1,13 @@
 import { useContext, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { pokemonNames } from '../utility/data';
 import Fuse from "fuse.js";
 import { SearchFuseContext, PokemonAsset, usePokemonMovesContext, usePokemonNamesContext } from "../contexts/DataListsContext";
 import { cleanStringToData } from '../utility/StringCleaning';
 
-const fuseOptions = {
-    isCaseSensitive: false,
-    // includeScore: false,
-    // shouldSort: true,
-    // includeMatches: false,
-    // findAllMatches: false,
-    // minMatchCharLength: 1,
-    // location: 0,
-    threshold: 0.0,
-    // distance: 100,
-    // useExtendedSearch: false,
-    ignoreLocation: true,
-    // ignoreFieldNorm: false,
-    // fieldNormWeight: 1,
-};
-// const fuse = new Fuse(pokemonNames, fuseOptions);
 const MAX_SEARCH_RESULTS = 10;
-
 type searchTermIndexCallback = (index: number) => void;
 
-// FIXME : Pokemon names should be formatted for display in search results
+// FIXME : Could possibly switch to use reducer
 export function SearchBar() {
     const location = useLocation();
     const navigate = useNavigate();
