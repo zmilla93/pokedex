@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { isValidPokemon } from "../PokeAPI/Utility";
-import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
+import { Pokemon, PokemonSpecies, Ability } from '../PokeAPI/types/Pokemon';
 import { usePokemon, validatePokemonData } from "../hooks/usePokemon";
 import { Loader } from "./Loader";
 import { Column, TwoColumnView } from "./TwoColumnView";
@@ -80,7 +80,9 @@ function StatTable({ pokemon, species }: { pokemon: Pokemon, species: PokemonSpe
         Height: formatHeight(pokemon.height),
         Weight: formatWeight(pokemon.weight),
         Species: species.genera.find(v => v.language.name === "en")?.genus,
-        Type: <TypeView types={pokemon.types.map(entry => entry.type.name)} />
+        // FIXME : Make ability component
+        Abilities: pokemon.abilities.map(ability => <span key={ability.ability.name}>{ability.ability.name} </span>),
+        Type: <TypeView types={pokemon.types.map(entry => entry.type.name)} />,
     };
 
     const elements = [];
