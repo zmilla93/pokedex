@@ -8,7 +8,7 @@ export function usePokemonNames() {
     const [pokemonNames, setPokemonNames] = useState<null | string[]>(null);
     const [pokemonNamesClean, setPokemonNamesClean] = useState<null | string[]>(null);
     if (pokemonNames === null) {
-        api.request<NamedAPIResourceList>("https://pokeapi.co/api/v2/pokemon/")
+        api.request<NamedAPIResourceList>("https://pokeapi.co/api/v2/pokemon/", -1)
             .then(data => {
                 const names: string[] = [];
                 const cleanNames: string[] = [];

@@ -27,15 +27,17 @@ export class PokeApi {
 	 * @param limit (Optional) Pagination limit, default 9999
 	 * @returns Promise<T> for the requested endpoint
 	 */
-	request<T>(endpoint: string, limit = 9999): Promise<T> {
+	request<T>(endpoint: string, limit = 0): Promise<T> {
 		endpoint = endpoint.toLowerCase();
-		const limitData = `limit=${limit}`;
+		if (limit === -1) limit = 9999;
+		const dataLimit = limit === 0 ? "" : `limit=${limit}`;
 		let response = this.cache[endpoint];
 		if (response !== undefined) this.cacheHitCount++;
 		else {
 			this.fetchCount++;
 			if (!endpoint.startsWith("http")) endpoint = PokeApi.URL + endpoint;
-			response = fetch(endpoint + "?" + limitData)
+			const target = limit > 0 ? endpoint + "?" + dataLimit : endpoint;
+			response = fetch(target)
 				.then(data => {
 					if (!data.ok || data.status !== 200) throw new Error(`Failed to fetch data from '${endpoint}', status '${data.status}'.`);
 					return data.json();

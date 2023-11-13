@@ -33,7 +33,7 @@ export const SearchFuseContext = createContext<Fuse<PokemonAsset>>(new Fuse([], 
 function useListContext(context: Context<ListContext>, endpoint: string) {
     const { values, setValues, cleanValues, setCleanValues } = useContext<ListContext>(context);
     if (values === null) {
-        api.request<NamedAPIResourceList>(endpoint)
+        api.request<NamedAPIResourceList>(endpoint, -1)
             .then(data => {
                 const values: string[] = [];
                 const cleanValues: string[] = [];
