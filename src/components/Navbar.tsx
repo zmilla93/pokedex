@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { GameSelector } from "./GameSelector";
 import { SearchBar } from "./SearchBox";
+import { DataListsContextProvider, usePokemonMovesContext, usePokemonNamesContext } from "../hooks/DataListsContext";
 
 export function Navbar() {
     const location = useLocation();
@@ -10,7 +11,20 @@ export function Navbar() {
             <span className="flex items-center">
                 <GameSelector />
                 <SearchBar />
+                <NamesComp />
             </span>
+        </div>
+    );
+}
+
+function NamesComp() {
+    const [names, cleanNames] = usePokemonNamesContext();
+    const moves = usePokemonMovesContext();
+    // console.log(names);
+    // console.log(cleanNames);
+    return (
+        <div>
+            NAMES
         </div>
     );
 }

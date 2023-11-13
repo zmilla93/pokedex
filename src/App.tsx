@@ -5,6 +5,7 @@ import { DebugView } from "./pages/Debug";
 import { MovePage } from "./pages/MovePage";
 import '../src/css/loaders.css';
 import { HomePage } from "./pages/HomePage";
+import { DataListsContextProvider } from "./hooks/DataListsContext";
 
 // Hash browser needs to be used when hosting on github pages
 // due to not having access to server side routing features.
@@ -27,6 +28,9 @@ export default function App() {
     );
     const routerBuilder = useHashRouter ? createHashRouter : createBrowserRouter;
     const router = routerBuilder(createRoutesFromElements(routerContents));
-    return <RouterProvider router={router}></RouterProvider>;
-
+    return (
+        <DataListsContextProvider>
+            <RouterProvider router={router} />
+        </DataListsContextProvider>
+    );
 }
