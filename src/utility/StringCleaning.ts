@@ -5,14 +5,14 @@ export function cleanMachine(text: string): string {
 
 // FIXME : This should be changed to replaceAll (or regex equivalent)
 export function formatFlavorText(text: string) {
-    text = text.replace("\f", " ")
-        .replace("-\n", "-")
-        .replace("\n", " ")
-        .replace("’", "'")
-        .replace("，", ",")
-        .replace("", "")
-        .replace("­", "")
-        .replace("　", "");
+    text = text.replaceAll("\f", " ")
+        .replaceAll("-\n", "-")
+        .replaceAll("\n", " ")
+        .replaceAll("’", "'")
+        .replaceAll("，", ",")
+        .replaceAll("", "")
+        .replaceAll("­", "")
+        .replaceAll("　", "");
     return text;
 }
 
