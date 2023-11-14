@@ -5,6 +5,7 @@ import { Move } from '../PokeAPI/types/Moves';
 import { MoveLearnMethodValue, VersionGroupValue } from "../PokeAPI/types/Custom";
 import { Machine } from "../PokeAPI/types/Machines";
 import { getMachineIdFromURL, isValidPokemon } from "../PokeAPI/Utility";
+import { usePokemonNames } from "./usePokemonNamesList";
 
 export interface CombinedMove {
     pokemonMove: PokemonMove;   // Maps a Pokemon to a Move (learn method, level, etc)
@@ -26,7 +27,8 @@ export interface MoveData {
 }
 
 export function usePokemonMoves(pokemonName: string, filter: VersionGroupValue): MoveData {
-    const validName = isValidPokemon(pokemonName);
+    const [pokemonNames] = usePokemonNames();
+    const validName = isValidPokemon(pokemonNames, pokemonName);
     const [moveList, setMoveList] = useState<MoveList>();
     const [pokemonMoves, setPokemonMoves] = useState<PokemonMove[]>([]);
     const [moves, setMoves] = useState<Move[]>([]);

@@ -10,12 +10,13 @@ import { TypeView } from "./pokemon/TypeView";
 import { VersionGroupValue } from "../PokeAPI/types/Custom";
 import { useGameVersion } from "../hooks/useGameVersion";
 import { formatFlavorText, dataToCleanString } from '../utility/StringCleaning';
-import { gameVersionMap } from "../utility/data";
+import { gameVersionMap } from '../utility/data';
 import { ContentWrapper } from "./ContentWrapper";
 import { SpriteViewer } from "./SpriteViewer";
 import { useTitle } from "../hooks/useTitle";
 import { EvolutionTable } from "./pokemon/EvolutionTable";
 import { getPreviousAndNextPokemon } from "../utility/util";
+import { usePokemonNames } from "../hooks/usePokemonNamesList";
 
 const starEmpty = require("Icons/star-outline.svg");
 const starFull = require("Icons/star-full-outline.svg");
@@ -25,9 +26,10 @@ export function PokemonView() {
     if (pokemonName === undefined) pokemonName = "";
     const pokeData = usePokemon(pokemonName);
     const gameVersion = useGameVersion();
-    const [previousPokemon, nextPokemon] = getPreviousAndNextPokemon(pokemonName);
+    const [pokemonNames] = usePokemonNames();
+    const [previousPokemon, nextPokemon] = getPreviousAndNextPokemon(pokemonNames, pokemonName);
     useTitle(dataToCleanString(pokemonName));
-    if (!isValidPokemon(pokemonName)) return (<div>Invalid pokemon!</div>);
+    if (!isValidPokemon(pokemonNames, pokemonName)) return (<div>Invalid pokemon!</div>);
     if (!validatePokemonData(pokeData)) return (<Loader />);
     const { pokemon, species, evolutionChain } = pokeData;
     const flavorText = getFlavorText(species!, gameVersion);

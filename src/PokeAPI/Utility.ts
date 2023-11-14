@@ -1,4 +1,4 @@
-import { pokemonNames } from '../utility/data';
+import { cleanStringToData } from '../utility/StringCleaning';
 
 export function getMachineIdFromURL(url: string): number {
     let id = url.replace(/.*\/machine\//i, "");
@@ -11,8 +11,8 @@ export function getMachineIdFromURL(url: string): number {
  * @param pokemonName The name of the pokemon
  * @returns True if valid pokemon, false otherwise
  */
-export function isValidPokemon(pokemonName: string): boolean {
-    // FIXME : Use data to clean string
-    const cleanName = pokemonName.toLowerCase().replace(" ", "-");
-    return pokemonNames.includes(cleanName);
+export function isValidPokemon(pokemonNames: string[] | null, pokemonName: string): boolean {
+    if (pokemonNames === null) return false;
+    const dataName = cleanStringToData(pokemonName);
+    return pokemonNames.includes(dataName);
 }

@@ -3,13 +3,15 @@ import api from "../PokeAPI/PokeAPI";
 import { Pokemon, PokemonSpecies } from "../PokeAPI/types/Pokemon";
 import { isValidPokemon } from '../PokeAPI/Utility';
 import { EvolutionChain } from "../PokeAPI/types/Evolution";
+import { usePokemonNames } from "./usePokemonNamesList";
 
 export function usePokemon(pokemonName: string) {
     const [pokemon, setPokemon] = useState<Pokemon | undefined>();
     const [speciesId, setSpeciesId] = useState<string | undefined>();
     const [species, setSpecies] = useState<PokemonSpecies>();
     const [evolutionChain, setEvolutionChain] = useState<EvolutionChain>();
-    const validPokemonName = isValidPokemon(pokemonName);
+    const [pokemonNames] = usePokemonNames();
+    const validPokemonName = isValidPokemon(pokemonNames, pokemonName);
     function clearData() {
         setPokemon(undefined);
         setSpeciesId(undefined);
