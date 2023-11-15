@@ -5,10 +5,11 @@ import { dataToCleanString } from "../utility/StringCleaning";
 
 export function HomePage() {
     useTitle();
+    const seed = Date.now();
     return (
-        <div className={`flex items-center h-full w-full`}>
-            <div className="w-full bg-blue-300 m-20 py-20 flex rounded-lg">
-                <ImageGrid />
+        <div className={`flex items-center h-full w-full justify-center`}>
+            <div className="bg-blue-300 flex rounded-lg justify-center">
+                <ImageGrid seed={seed} />
                 <div className="flex justify-center text-center bg-orange-400 w-full">
                     <HomePageContent />
                 </div>
@@ -30,9 +31,9 @@ function HomePageContent() {
     );
 }
 
-function ImageGrid() {
+function ImageGrid({ seed }: { seed: number }) {
     const location = useLocation();
-    const randomArt = usePokemonArt(9);
+    const randomArt = usePokemonArt(9, seed);
     const images = randomArt.map(img => {
         return (
             <Link key={img.name} to={"/pokemon/" + img.name + location.search}>

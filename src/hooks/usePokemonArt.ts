@@ -1,28 +1,21 @@
 import { useEffect, useState } from "react";
 import api from "../PokeAPI/PokeAPI";
+import { RNG } from "../utility/rng";
 
 export interface NamedArt {
     name: string;
     url: string;
 }
 
-export function usePokemonArt(count: number): NamedArt[] {
+export function usePokemonArt(count: number, seed: number): NamedArt[] {
     const [pokemonImages, setPokemonImages] = useState<NamedArt[]>([]);
-    const [validData, setValidData] = useState(false);
-    const BUFFER = 5;
+    const BUFFER = 0;
     const MAX_INDEX = 1000;
+    RNG.setSeed(seed);
     useEffect(() => {
+        let ignore = false;
         (async () => {
-            if (validData) return;
-            const nums = [...Array(MAX_INDEX).keys()];
-            const rng: number[] = [];
-            let curMax = MAX_INDEX - 2;
-            for (let i = 0; i < count + BUFFER; i++) {
-                const randomIndex = Math.floor(Math.random() * curMax) + 1;
-                const num = nums.splice(randomIndex, 1)[0];
-                rng.push(num);
-                curMax--;
-            }
+            const rng = RNG.getRandomArray(1, MAX_INDEX, count + BUFFER, true);
             const requests = rng.map(index => api.getPokemon(index));
             const responses = await Promise.all(requests);
             let validImages = 0;
@@ -36,9 +29,9 @@ export function usePokemonArt(count: number): NamedArt[] {
                     validImages++;
                 }
             });
-            setValidData(true);
-            setPokemonImages(nextImages);
+            if (!ignore) setPokemonImages(nextImages);
         })();
-    }, [count, validData]);
+        return () => { ignore = true; };
+    }, [count]);
     return pokemonImages;
 }
